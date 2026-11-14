@@ -1,0 +1,173 @@
+.status-internet {
+  --status-cor: #55e6a5;
+  --status-brilho: rgba(64, 232, 158, 0.24);
+
+  position: relative;
+  display: flex;
+  min-height: 54px;
+  align-items: center;
+  gap: 11px;
+  overflow: hidden;
+  padding: 7px 13px 7px 9px;
+  border: 1px solid color-mix(in srgb, var(--status-cor) 29%, transparent);
+  border-radius: 11px;
+  background:
+    radial-gradient(
+      ellipse at 17% 50%,
+      var(--status-brilho),
+      transparent 43%
+    ),
+    linear-gradient(
+      120deg,
+      rgba(23, 39, 48, 0.94),
+      rgba(15, 22, 34, 0.96) 72%
+    );
+  box-shadow:
+    inset 0 1px rgba(255, 255, 255, 0.045),
+    0 0 20px color-mix(in srgb, var(--status-cor) 10%, transparent);
+  color: #eaf8f2;
+  isolation: isolate;
+}
+
+.status-internet--desconectado {
+  --status-cor: #ff6478;
+  --status-brilho: rgba(255, 74, 96, 0.18);
+
+  background:
+    radial-gradient(
+      ellipse at 17% 50%,
+      var(--status-brilho),
+      transparent 43%
+    ),
+    linear-gradient(
+      120deg,
+      rgba(48, 25, 35, 0.94),
+      rgba(20, 21, 32, 0.96) 72%
+    );
+}
+
+
+
+.status-internet-globo {
+  position: relative;
+  display: grid;
+  width: 37px;
+  height: 37px;
+  flex: 0 0 37px;
+  place-items: center;
+  color: var(--status-cor);
+}
+
+.status-internet-aura,
+.status-internet-orbita {
+  position: absolute;
+  inset: 2px;
+  border: 1px solid color-mix(in srgb, var(--status-cor) 42%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.status-internet-aura {
+  animation: status-internet-pulso 2.2s ease-out infinite;
+}
+
+
+
+
+
+
+
+.status-internet-texto {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.status-internet-rotulo {
+  color: #8d9caf;
+  font-size: 8px;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+}
+
+.status-internet-texto strong {
+  color: #e8f4ef;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.045em;
+  white-space: nowrap;
+}
+
+.status-internet-indicador {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--status-cor);
+  box-shadow:
+    0 0 9px var(--status-cor),
+    0 0 17px var(--status-brilho);
+  animation: status-internet-led 1.6s ease-in-out infinite;
+}
+
+
+
+.status-internet--desconectado .status-internet-aura,
+.status-internet--desconectado .status-internet-orbita,
+.status-internet--desconectado .status-internet-indicador {
+  animation: none;
+}
+
+.status-internet--desconectado .status-internet-globo {
+  animation: status-internet-falha 380ms ease-out 1;
+}
+
+@keyframes status-internet-pulso {
+  0% {
+    opacity: 0.65;
+    transform: scale(0.72);
+  }
+
+  85%,
+  100% {
+    opacity: 0;
+    transform: scale(1.48);
+  }
+}
+
+
+
+
+
+@keyframes status-internet-led {
+  50% {
+    opacity: 0.45;
+    box-shadow: 0 0 4px var(--status-cor);
+  }
+}
+
+
+
+@keyframes status-internet-falha {
+  25% {
+    transform: translateX(-2px);
+  }
+
+  55% {
+    transform: translateX(2px);
+  }
+
+  80% {
+    transform: translateX(-1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .status-internet *,
+  .status-internet::before,
+  .status-internet::after {
+    animation: none !important;
+  }
+}

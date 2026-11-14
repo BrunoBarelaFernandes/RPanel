@@ -1,0 +1,112 @@
+.rede-recursos {
+  z-index: 1;
+  display: flex;
+  width: 100%;
+  min-height: 116px;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  gap: 9px;
+  margin: 20px 0 14px;
+}
+
+.rede-recursos__linha {
+  position: relative;
+  display: grid;
+  min-height: 49px;
+  grid-template-columns: 32px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  padding: 7px 10px;
+  border: 1px solid rgba(139, 161, 197, 0.1);
+  border-radius: 9px;
+  background: rgba(139, 161, 197, 0.035);
+}
+
+.rede-recursos__linha::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  content: '';
+  opacity: 0.55;
+}
+
+.rede-recursos__linha--download::before {
+  background: #61dafb;
+}
+
+.rede-recursos__linha--upload::before {
+  background: #a678ff;
+}
+
+.rede-recursos__icone {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid rgba(139, 161, 197, 0.12);
+  border-radius: 8px;
+  color: #77869b;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.rede-recursos__linha--download .rede-recursos__icone {
+  color: #61dafb;
+}
+
+.rede-recursos__linha--upload .rede-recursos__icone {
+  color: #a678ff;
+}
+
+.rede-recursos__linha--ativa .rede-recursos__icone {
+  animation: rede-recursos-piscar 0.3s ease-in-out infinite;
+}
+
+.rede-recursos__descricao {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rede-recursos__rotulo {
+  color: #c5d0df;
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.rede-recursos__estado {
+  overflow: hidden;
+  color: #7f8da2;
+  font-size: 9px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rede-recursos__valor {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: #e4edf8;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rede-recursos__valor small {
+  color: #8290a5;
+  font-size: 9px;
+  font-weight: 500;
+}
+
+@keyframes rede-recursos-piscar {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rede-recursos__linha--ativa .rede-recursos__icone {
+    animation: none;
+  }
+}

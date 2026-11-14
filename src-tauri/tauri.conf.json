@@ -1,0 +1,67 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "RPanel",
+  "version": "1.0.0",
+  "identifier": "dev.bruno.barela.fernandes.rpanel",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "RPanel",
+        "minWidth": 900,
+        "minHeight": 600,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "assetProtocol": {
+        "enable": true,
+        "scope": [
+          "$HOME/.local/share/icons/**",
+          "$HOME/.icons/**",
+          "$HOME/.local/share/flatpak/exports/**",
+          "$HOME/.local/share/flatpak/app/**",
+          "$HOME/.local/share/snapd/desktop/icons/**",
+          "$HOME/.local/share/Steam/appcache/**",
+          "/usr/share/**",
+          "/usr/local/share/icons/**",
+          "/usr/local/share/pixmaps/**",
+          "/var/lib/flatpak/exports/share/icons/**",
+          "/var/lib/flatpak/app/**",
+          "/var/lib/snapd/desktop/icons/**",
+          "/snap/**",
+          "/opt/**/icons/**",
+          "/opt/**/share/icons/**",
+          "/opt/**/pixmaps/**"
+        ]
+      },
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "publisher": "Bruno Barela Fernandes",
+    "homepage": "https://github.com/BrunoBarelaFernandes",
+    "category": "Utility",
+    "shortDescription": "Monitor de recursos do sistema",
+    "longDescription": "RPanel - Monitor de recursos e gerenciamento de processos Linux",
+    "linux": {
+      "deb": {
+        "depends": ["libssl3 | libssl3t64"]
+      }
+    }
+  }
+}

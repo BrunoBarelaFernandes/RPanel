@@ -1,0 +1,96 @@
+@property --angulo {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+.progress-bar-b {
+  transition: --angulo 700ms ease;
+}
+.progress-bar {
+  --gauge-color: #61dafb;
+  --gauge-track: #303a46;
+  --gauge-text: #f3f6fa;
+  --gauge-muted: #a3afbd;
+
+  display: flex;
+  width: min(100%, 220px);
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  color: var(--gauge-text);
+  font-family: inherit;
+
+}
+
+.progress-bar-b {
+  position: relative;
+  width: 180px;
+  height: 100px;
+  overflow: hidden;
+  filter: drop-shadow(0 0 0.2em var(--cor));
+
+}
+
+
+
+.progress-bar-b::before,
+.progress-bar-b::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  content: '';
+  mask: radial-gradient(farthest-side, transparent calc(100% - 12px), #000 calc(100% - 11px));
+}
+
+.progress-bar-b::before {
+  background: conic-gradient(from 270deg, var(--gauge-track) 0deg 180deg, transparent 180deg 360deg);
+}
+
+.progress-bar-b::after {
+  background: conic-gradient(
+    from 270deg,
+     var(--cor1) 0deg,
+     var(--cor2),
+    var(--cor3) var(--angulo),    
+    transparent var(--angulo) 180deg,
+    transparent 180deg 360deg
+  );
+
+}
+
+.progress-bar-dados {
+  position: absolute;
+  z-index: 1;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.progress-bar-dados strong {
+  font-size: 2rem;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-bar-dados span,
+.progress-bar-info {
+  color: var(--gauge-muted);
+}
+
+.progress-bar-dados span {
+  font-size: 0.85rem;
+}
+
+.progress-bar-info {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  text-align: center;
+}

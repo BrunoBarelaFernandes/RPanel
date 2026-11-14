@@ -1,0 +1,30 @@
+
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+    <id>dev.bruno.barela.fernandes.rpanel</id>
+
+    <name>RPanel</name>
+    <summary>Monitor de recursos do sistema</summary>
+
+    <developer id="dev.bruno.barela.fernandes">
+        <name>Bruno Barela Fernandes</name>
+    </developer>
+
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>MIT</project_license>
+
+    <description>
+        <p>
+            RPanel é um monitor de recursos e gerenciamento
+            de processos para sistemas Linux.
+        </p>
+    </description>
+
+    <url type="homepage">
+        https://github.com/BrunoBarelaFernandes
+    </url>
+
+    <launchable type="desktop-id">
+        dev.bruno.barela.fernandes.rpanel.desktop
+    </launchable>
+</component>
