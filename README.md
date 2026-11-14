@@ -1,5 +1,7 @@
 # RPanel
 
+[Português](README.md) | [English](README.en.md)
+
 **Monitoramento de recursos e gerenciamento de processos para Linux.**
 
 O RPanel é uma aplicação desktop desenvolvida para monitorar os recursos do sistema e acompanhar os processos em execução, oferecendo informações sobre hardware, sistema operacional e utilização de recursos em uma interface gráfica.
