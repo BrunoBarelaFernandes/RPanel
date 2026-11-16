@@ -68,7 +68,7 @@ function Processos({ processos = [], onEncerrar }) {
               {processos.length === 0 ? (
                 <tr>
                   <td className="processos-vazio" colSpan={4}>
-                    A lista de processos aparecerá aqui.
+                    A lista de processos pode estar carregando ou vazia.
                   </td>
                 </tr>
               ) : (

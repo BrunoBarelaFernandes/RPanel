@@ -293,13 +293,15 @@ pub(crate) fn processos(app: tauri::AppHandle){
             let mut ram_total = 0.0;
             let mut cpu_total = 0.0;
             let mut nome_app = corretor_nome(&processo_principal.name().to_string_lossy());
+            let mut filho = false;
             for pid_processo in pids_da_arvore(pid) {
                 if let Some(processo) = sistema.process(sysinfo::Pid::from_u32(pid_processo)) {
                     ram_total += processo.memory() as f64;
                     cpu_total += processo.cpu_usage() as f64;
                     if nome_app.to_string() == "bash"{
-                        if nome_app.to_string() != processo.name().to_string_lossy().to_string(){
-                            nome_app=corretor_nome(&processo_principal.name().to_string_lossy());
+                        if nome_app.to_string() != processo.name().to_string_lossy().to_string() && filho == false{
+                            nome_app=corretor_nome(&processo.name().to_string_lossy());
+                            filho = true;
                         }
                     }
                 }
