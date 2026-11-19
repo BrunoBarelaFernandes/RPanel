@@ -14,7 +14,8 @@ use crate::{ModulosProcessos::{app, flatpak, snap, steam}, modelos::DadosProcess
 use tauri::Emitter;
 use std::collections::HashMap;
 use crate::MONITOR_PROCESSOS;
-
+use std::collections::HashSet;
+use crate::MONITOR;
 
 fn corretor_nome(nome: &str)->String{
 let nomes: HashMap<String, String> = HashMap::from([
@@ -115,36 +116,45 @@ pub(crate) fn resolver_icone(nome: String)->String{
 }
 
 
+
 pub(crate) fn pids_da_arvore(pid_principal: u32) -> Vec<u32> {
-    let pid_argumento = pid_principal.to_string();
-    let saida = Command::new("pstree")
-        .args(["-T", "-p", "-l"])
-        .arg(pid_argumento)
-        .output();
+    let mut visitados = HashSet::new();
+    let mut pendentes = vec![pid_principal];
 
-    let Ok(saida) = saida else {
-        return vec![pid_principal];
-    };
-    if !saida.status.success() {
-        return vec![pid_principal];
-    }
+    while let Some(pid) = pendentes.pop() {
+        if !visitados.insert(pid) {
+            continue;
+        }
 
-    let texto = String::from_utf8_lossy(&saida.stdout);
-    let mut pids = Vec::new();
-    for trecho in texto.split('(').skip(1) {
-        if let Some((numero, _)) = trecho.split_once(')') {
-            if let Ok(pid) = numero.parse::<u32>() {
-                pids.push(pid);
+        let caminho = format!("/proc/{}/task", pid);
+
+        let Ok(threads) = fs::read_dir(caminho) else {
+            continue;
+        };
+
+        for thread in threads.flatten() {
+            let caminho = thread.path().join("children");
+
+            let Ok(conteudo) = fs::read_to_string(caminho) else {
+                continue;
+            };
+
+            for filho in conteudo.split_whitespace() {
+                if let Ok(filho) = filho.parse::<u32>() {
+                    if !visitados.contains(&filho) {
+                        pendentes.push(filho);
+                    }
+                }
             }
         }
     }
 
-    pids.push(pid_principal);
+    let mut pids: Vec<u32> = visitados.into_iter().collect();
+
     pids.sort_unstable();
-    pids.dedup();
+
     pids
 }
-
 
 
 fn filtro_pids() -> (Vec<u32>, Vec<u32>) {
@@ -244,9 +254,6 @@ pub(crate) fn encerrar_app(pid: u32) -> Result<(), String> {
 #[tauri::command]
 pub(crate) fn processos(app: tauri::AppHandle){
     let mut jogo_steam = 0;
-    let mut sistema = System::new_all();
-    let quantidade_cpus = sistema.cpus().len().max(1) as f64;
-    let mut quantidade = sistema.processes().values().count();
     let pids = Arc::new(Mutex::new(filtro_pids()));
     let pids_thread = Arc::clone(&pids);
     let (tx, rx) = mpsc::channel();
@@ -256,7 +263,7 @@ pub(crate) fn processos(app: tauri::AppHandle){
                     if mensagem == "start" && start == 0{
                         //println!("---------------------------------------------------------------");
                         start=1;
-                        thread::sleep(Duration::from_secs(5));
+                        thread::sleep(Duration::from_secs(3));
                         *pids_thread.lock().unwrap() = filtro_pids();
                         start=0;
                     }
@@ -265,17 +272,24 @@ pub(crate) fn processos(app: tauri::AppHandle){
 
     loop{
         if !*MONITOR_PROCESSOS.lock().unwrap() {
+            thread::sleep(Duration::from_millis(200));
             continue;
         }
         thread::sleep(Duration::from_secs(1));
+        let mut monitor = MONITOR.get().unwrap().lock().unwrap();
+        let quantidade_cpus = monitor.sistema.cpus().len().max(1) as f64;
+        let mut quantidade = monitor.sistema.processes().values().count();
+        
 
         
-        sistema.refresh_processes_specifics(
+        monitor.sistema.refresh_processes_specifics(
             ProcessesToUpdate::All,
             true,
             ProcessRefreshKind::everything().without_tasks(),
         );
-        let quantidade_atual = sistema.processes().len();
+
+
+        let quantidade_atual = monitor.sistema.processes().len();
         if quantidade != quantidade_atual {
             quantidade = quantidade_atual;
             tx.send("start").unwrap();
@@ -285,21 +299,25 @@ pub(crate) fn processos(app: tauri::AppHandle){
         pids_principais.sort_unstable();
         pids_principais.dedup();
         let mut lista: Vec<DadosProcesso> = Vec::new();
+        let pids_principais2 = pids_principais.clone();
         for pid in pids_principais {
-            let Some(processo_principal) = sistema.process(sysinfo::Pid::from_u32(pid)) else {
+            let Some(processo_principal) = monitor.sistema.process(sysinfo::Pid::from_u32(pid)) else {
                 continue;
             };
 
             let mut ram_total = 0.0;
             let mut cpu_total = 0.0;
             let mut nome_app = corretor_nome(&processo_principal.name().to_string_lossy());
+            let mut filho = false;
+            let pid2 = pid.clone();
             for pid_processo in pids_da_arvore(pid) {
-                if let Some(processo) = sistema.process(sysinfo::Pid::from_u32(pid_processo)) {
+                if let Some(processo) = monitor.sistema.process(sysinfo::Pid::from_u32(pid_processo)) {
                     ram_total += processo.memory() as f64;
                     cpu_total += processo.cpu_usage() as f64;
                     if nome_app.to_string() == "bash"{
-                        if nome_app.to_string() != processo.name().to_string_lossy().to_string(){
-                            nome_app=corretor_nome(&processo_principal.name().to_string_lossy());
+                        if nome_app.to_string() != processo.name().to_string_lossy().to_string() && filho == false{
+                            nome_app=corretor_nome(&processo.name().to_string_lossy());
+                            filho = true;
                         }
                     }
                 }
@@ -327,6 +345,25 @@ pub(crate) fn processos(app: tauri::AppHandle){
                 cpu: cpu_total / quantidade_cpus,
             });
         }}
+        if lista.is_empty(){
+            lista.push(DadosProcesso {
+                icone: "null".to_string(),
+                pid: 0,
+                nome: "null".to_string(),
+                ram: 0.0,
+                cpu: 0.0,
+            });
+        }
+        else{
+            let mut nomes_vistos = Vec::new();
+            lista.retain(|processo| {
+                if nomes_vistos.contains(&processo.nome) {false}
+                 else {
+                    nomes_vistos.push(processo.nome.clone());
+                    true
+                }
+            });
+        }
         let _ = app.emit("DadosMonitorProcessos", lista);
 
     }

@@ -1,9 +1,9 @@
 use std::sync::OnceLock;
 use std::{ path::Path, thread, time::Duration};
-use sysinfo::{Components, DiskKind, Disks, Networks, System};
 use std::process::Command;
 use tauri::Emitter;
 use crate::{modelos::{DadosSistemaRAM, DadosRam}};
+use crate::MONITOR;
 
 
 
@@ -91,20 +91,15 @@ pub(crate) fn ram_dados() -> DadosSistemaRAM {
     carregar_dados_sistema_ram()
 }
 
-pub(crate) fn ram_leitura()->DadosRam{
-
-    let mut sistema = System::new_all();
-    sistema.refresh_memory();
-
-    let mut memoria = DadosRam {
-        total: 0.0,
-        usada: 0.0,
-        restante: 0.0,
-        uso_percentual: 0,
-    };
-     memoria.total = (sistema.total_memory() as f64).round();
-     memoria.usada = (sistema.used_memory() as f64).round();
-     memoria.restante = (memoria.total - memoria.usada).round();
-     memoria.uso_percentual = (memoria.usada / memoria.total * 100.0).round() as u8;
-     memoria
+pub(crate) fn ram_leitura(total: f64, usada: f64) -> DadosRam {
+    DadosRam {
+        total,
+        usada,
+        restante: total - usada,
+        uso_percentual: if total > 0.0 {
+            (usada / total * 100.0).round() as u8
+        } else {
+            0
+        },
+    }
 }

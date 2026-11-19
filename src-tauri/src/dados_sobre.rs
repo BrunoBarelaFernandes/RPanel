@@ -1,17 +1,17 @@
 use std::{ path::Path, thread, time::Duration};
 
-use sysinfo::{Components, DiskKind, Disks, Networks, System};
 
 use crate::rede::{interface_rede_atual, rede_mac, rede_ip};
 use crate::disco::{disco_lista};
+use crate::MONITOR;
+use crate::INFO_RPANEL;
 use std::fs;
 use std::env;
 use crate::{
     modelos::{DadosSobre, ListaDisco},
 };
 
-const GB: f64 = 1_073_741_824.0;
-const MB: f64 = 1_048_576.0;
+use sysinfo::System;
 
 //Verifica idioma local sistema linux
 fn idioma_sistema() -> String {
@@ -76,6 +76,7 @@ pub(crate) fn info() -> DadosSobre{
         modelo_placa_mae: "Indefinido".to_string(),
         versao_firmware: "Indefinido".to_string(),
         discos: ListaDisco {lista: Vec::new(),},
+        sobre_rpanel: INFO_RPANEL.clone(),
     };
     
 
@@ -85,13 +86,26 @@ pub(crate) fn info() -> DadosSobre{
     dados.sistema_janelas=sistema_janelas();
     dados.nome_host = System::host_name().unwrap_or_else(|| "Desconhecido".to_string());
     dados.idioma = idioma_sistema();
-    dados.interface_rede = interface_rede_atual().expect("REASON");
-    dados.mac = rede_mac(interface_rede_atual());
-    dados.ip = rede_ip(interface_rede_atual());
+
+
+    let interface = interface_rede_atual();
+
+
+    dados.interface_rede = interface.clone().unwrap_or_else(|| "Indefinido".to_string());
+
+    {
+        let monitor = MONITOR.get().unwrap().lock().unwrap();
+
+        dados.mac = rede_mac(&monitor.redes, interface.clone());
+        dados.ip = rede_ip(&monitor.redes, interface);
+    }
+
     dados.fabricante_placa_mae=ler_dmi("board_vendor");
     dados.modelo_placa_mae=ler_dmi("board_name");
     dados.versao_firmware=ler_dmi("bios_version");
-    dados.discos.lista=disco_lista();
+    
+    let monitor = MONITOR.get().unwrap().lock().unwrap();
+    dados.discos.lista = disco_lista(&monitor.discos);
 
     dados
 

@@ -1,4 +1,5 @@
 use serde::Serialize;
+use sysinfo::{Components, Disks, Networks, System};
 
 #[derive(Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -26,6 +27,7 @@ pub(crate) struct DadosSobre {
     pub(crate) modelo_placa_mae: String,
     pub(crate) versao_firmware: String,
     pub(crate) discos: ListaDisco,
+    pub(crate) sobre_rpanel: InfoRPanel,
 
 }
 
@@ -117,5 +119,25 @@ pub(crate) struct Disco {
 #[serde(rename_all = "camelCase")]
 pub(crate) struct ListaDisco {
     pub(crate) lista: Vec<Disco>,
+
+}
+
+
+pub(crate) struct DadosSysInfo {
+    pub(crate) sistema: System,
+    pub(crate) componentes: Components,
+    pub(crate) discos: Disks,
+    pub(crate) redes: Networks,
+}
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub(crate) struct InfoRPanel {
+    pub(crate) versao: String,
+    pub(crate) data_versao: String,
+    pub(crate) dev: String,
+    pub(crate) nome_link_git_hub: String,
+    pub(crate) endereco_link_git_hub: String,
+    pub(crate) licenca: String,
 
 }

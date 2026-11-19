@@ -1,8 +1,11 @@
+
 import { useState } from 'react';
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { AppWindow, Cpu, Gpu, MemoryStick } from 'lucide-react';
 import './Processos.css';
-
+import Loading from "../components/Loading";
+import Alert from "../components/Alert";
+import PopUp from "../components/PopUp";
 
 
 function formatarMemoria(valor) {
@@ -28,17 +31,24 @@ function formatarMemoria(valor) {
 }
 
 
-
 function formatarPercentual(valor) {
   if (valor === null || valor === undefined || valor === '') return '—';
   return typeof valor === 'number' ? `${valor.toFixed(1)}%` : valor;
 }
 
 
-
 function Processos({ processos = [], onEncerrar }) {
   const [pidSelecionado, setPidSelecionado] = useState(null);
+  const [popupAberto, setPopupAberto] = useState(false);
+  const [aplicativoSelecionado, setAplicativoSelecionado] = useState(null);
+
   const processoSelecionado = processos.find((processo) => processo.pid === pidSelecionado);
+
+  async function confirmarEncerramento() {
+    await invoke("encerrar_app", {
+      pid: aplicativoSelecionado.pid,
+    });
+  }
 
   return (
     <main className="pagina-processos">
@@ -68,18 +78,33 @@ function Processos({ processos = [], onEncerrar }) {
               {processos.length === 0 ? (
                 <tr>
                   <td className="processos-vazio" colSpan={4}>
-                    A lista de processos aparecerá aqui.
+                    <label><Loading cor="#1792b5a4" tamanho={40} /></label>
                   </td>
                 </tr>
               ) : (
                 processos.map((processo) => {
                   const selecionado = processo.pid === pidSelecionado;
 
+                  if (processo.pid === 0) {
+                    return (
+                      <tr key={processo.pid}>
+                        <td className="processos-vazio" colSpan={4}>
+                          <span><Alert tamanho={50} /></span>
+                          <br />
+                          <span><b>Sem processos</b></span>
+                        </td>
+                      </tr>
+                    );
+                  }
+
                   return (
-                    <tr style={{"cursor":"pointer"}} 
-                        onClick={() => setPidSelecionado(selecionado ? null : processo.pid)}
-                        className={selecionado ? 'processo-linha processo-linha--selecionado' : 'processo-linha'} key={processo.pid}>
-                      <td >
+                    <tr
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setPidSelecionado(selecionado ? null : processo.pid)}
+                      className={selecionado ? 'processo-linha processo-linha--selecionado' : 'processo-linha'}
+                      key={processo.pid}
+                    >
+                      <td>
                         <button
                           className="processo-aplicativo"
                           type="button"
@@ -112,23 +137,26 @@ function Processos({ processos = [], onEncerrar }) {
           <span className="processos-selecao-info">
             {processoSelecionado ? `Selecionado: ${processoSelecionado.nome}` : 'Nenhum aplicativo selecionado'}
           </span>
+
           <button
             className="processos-botao-encerrar"
             type="button"
             disabled={!processoSelecionado}
-            onClick={async () => {
-              try {
-                await invoke("encerrar_app", {
-                  pid: processoSelecionado.pid,
-                });
-              } catch (erro) {
-                console.error("Não foi possível encerrar o aplicativo:", erro);
-              }
+            onClick={() => {
+              setAplicativoSelecionado(processoSelecionado);
+              setPopupAberto(true);
             }}
           >
             Encerrar aplicativo
           </button>
         </footer>
+
+        <PopUp
+          aberto={popupAberto}
+          nomeAplicativo={aplicativoSelecionado?.nome}
+          onConfirmar={confirmarEncerramento}
+          onFechar={() => setPopupAberto(false)}
+        />
       </section>
     </main>
   );

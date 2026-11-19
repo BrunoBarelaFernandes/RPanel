@@ -38,7 +38,8 @@ function App() {
   const [dadosSobre, setDadosSobre] = useState({
     nomeOs: "Desconhecido", versaoOs: "Desconhecido", kernel: "Desconhecido", sistemaJanelas: "Desconhecido", nomeHost: "Desconhecido",
     idioma: "Desconhecido", interfaceRede: "Desconhecido", mac: "Desconhecido", ip: "Desconhecido", fabricantePlacaMae: "Desconhecido",
-    modeloPlacaMae: "Desconhecido", versaoFirmware: "Desconhecido", discos: { lista: [] }
+    modeloPlacaMae: "Desconhecido", versaoFirmware: "Desconhecido", discos: { lista: [] }, sobreRpanel: { versao: "Desconhecido", 
+      dataVersao: "Desconhecido", dev: "Desconhecido", nomeLinkGitHub: "Desconhecido", enderecoLinkGitHub: "Desconhecido", licenca: "Desconhecido" }
   });
 
   const [dadosProcessos, setDadosProcessos] = useState([]);

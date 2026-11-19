@@ -17,6 +17,7 @@ pub(crate) fn monitorar_gpu(app: tauri::AppHandle){
 
     loop{
         if !*MONITOR_GPU.lock().unwrap() {
+            thread::sleep(Duration::from_millis(200));
             continue;
         }
     thread::sleep(Duration::from_secs(1));

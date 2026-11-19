@@ -16,6 +16,7 @@ import {
   RefreshCcwDot,
   Code,
   Calendar,
+  Scale,
 
 } from 'lucide-react';
 import './Sobre.css';
@@ -122,10 +123,12 @@ const discos = [
 ];
 
 const sobre = [
-  { rotulo: 'Versão', valor: "1.0.0", icone: RefreshCcwDot },
-  { rotulo: 'Data Versão', valor: "16/11/2026", icone: Calendar },
-  { rotulo: 'Desenvolvedor', valor: "Bruno Barela Fernandes", icone: Code },
-  { rotulo: 'GitHub', link: "https://github.com/BrunoBarelaFernandes", valor: "github.com/BrunoBarelaFernandes", icone: GithubIcon },
+  { rotulo: 'Versão', valor: dadosSobre.sobreRpanel.versao, icone: RefreshCcwDot },
+  { rotulo: 'Data Versão', valor: dadosSobre.sobreRpanel.dataVersao, icone: Calendar },
+  { rotulo: 'Desenvolvedor', valor: dadosSobre.sobreRpanel.dev, icone: Code },
+  { rotulo: 'GitHub', link: dadosSobre.sobreRpanel.enderecoLinkGitHub, valor: dadosSobre.sobreRpanel.nomeLinkGitHub, icone: GithubIcon },
+  { rotulo: 'Licença', valor: dadosSobre.sobreRpanel.licenca, icone: Scale },
+
 ];
 
   return (
