@@ -1,34 +1,40 @@
-use std::{ path::Path, thread, time::Duration};
+use std::{thread, time::Duration};
 
-use sysinfo::{Components, DiskKind, Disks, Networks, System};
+use sysinfo::{System};
 use tauri::Emitter;
 use chrono::Local;
 use crate::{
     rede::{interface_rede_atual, rede_rx_tx},
-    ram::{ram_dados, ram_leitura},
+    ram::{ram_leitura},
     disco::{disco_os_data},
-    modelos::{DadosCPU, DadosDisco, DadosMonitor, DadosRam, DadosRede, DadosGPU},
+    modelos::{DadosCPU, DadosMonitor},
+    idioma::{idioma}
 };
 use crate::MONITOR_SISTEMA;
+use crate::modelos::Labels;
+use crate::MONITOR;
 
-const GB: f64 = 1_073_741_824.0;
-const MB: f64 = 1_048_576.0;
 
 
 //Verifica tempo do sistema:
-fn tempo_sistema() -> String {
+fn tempo_sistema(labels: Labels) -> String {
     let segundos = System::uptime();
     let dias = segundos / 86_400;
     let horas = (segundos % 86_400) / 3_600;
     let minutos = (segundos % 3_600) / 60;
 
     if dias > 0 {
-        format!("{dias} dias, {horas} horas")
-    } else if horas > 0 {
-        format!("{horas} horas e {minutos} minutos")
-    } else {
-        format!("{minutos} minutos")
-    }
+        labels.sobre.parte_sistema_tempo_sistema_label
+          .replace("{dias}", &dias.to_string())
+          .replace("{horas}", &horas.to_string())
+        } else if horas > 0 {
+            labels.sobre.parte_sistema_tempo_sistema_label2
+              .replace("{horas}", &horas.to_string())
+              .replace("{minutos}", &minutos.to_string())
+            } else {
+                labels.sobre.parte_sistema_tempo_sistema_label3
+                  .replace("{minutos}", &minutos.to_string())
+            }
 }
 
 
@@ -37,41 +43,43 @@ fn tempo_sistema() -> String {
 
 
 pub(crate) fn monitorar_sistema(app: tauri::AppHandle) {
-    let mut sistema = System::new_all();
-    let mut discos = Disks::new_with_refreshed_list();
-    let mut redes = Networks::new_with_refreshed_list();
-    let mut componentes = Components::new_with_refreshed_list();
+    
     let interface_atual = interface_rede_atual();
 
-    // Primeira leitura da CPU e da rede.
-    sistema.refresh_cpu_usage();
-    redes.refresh(true);
 
     loop {
         if !*MONITOR_SISTEMA.lock().unwrap() {
+            thread::sleep(Duration::from_millis(200));
             continue;
         }
-        
-        thread::sleep(Duration::from_secs(1));
 
-        sistema.refresh_cpu_usage();
-        sistema.refresh_memory();
-        discos.refresh(true);
-        redes.refresh(true);
-        componentes.refresh(true);
+        thread::sleep(Duration::from_secs(1));
+        let labels=idioma(app.clone());
+
+        let mut monitor = MONITOR.get().unwrap().lock().unwrap();
         
-        let temperatura_cpu = componentes
+        monitor.sistema.refresh_cpu_usage();
+        monitor.sistema.refresh_memory();
+
+        let total_ram = monitor.sistema.total_memory() as f64;
+        let usada_ram = monitor.sistema.used_memory() as f64;
+
+        monitor.discos.refresh(true);
+        let disco = disco_os_data(&monitor.discos);
+
+        
+        let temperatura_cpu = monitor.componentes
             .iter()
             .find(|componente| componente.label().contains("Package id 0"))
             .and_then(|componente| componente.temperature())
             .map(|temperatura| temperatura.round() as u8);
 
-        let uso_total_cpu = sistema.global_cpu_usage().round() as u8;
+        let uso_total_cpu = monitor.sistema.global_cpu_usage().round() as u8;
         //println!("Uso total da CPU: {uso_total_cpu}%");
 
         let mut modelo_cpu = String::new();
         let mut frequencia_cpu = String::new();
-        if let Some(cpu) = sistema.cpus().first() {
+        if let Some(cpu) = monitor.sistema.cpus().first() {
             modelo_cpu = cpu.brand().to_string();
             frequencia_cpu = cpu.frequency().to_string();
             //println!("Modelo: {}", cpu.brand());
@@ -79,8 +87,7 @@ pub(crate) fn monitorar_sistema(app: tauri::AppHandle) {
         }
 
         //println!("--- REDE ---");
-        let interface_rede = interface_atual.clone();
-        let mut rede_atual = rede_rx_tx(interface_rede);
+        let rede_atual = rede_rx_tx(&mut monitor.redes, interface_atual.clone());
 
 
 
@@ -91,11 +98,11 @@ pub(crate) fn monitorar_sistema(app: tauri::AppHandle) {
                 uso_percentual: uso_total_cpu,
                 temperatura: temperatura_cpu.unwrap_or(0),
             },
-            ram: ram_leitura(),
-            disco: disco_os_data(),
+            ram: ram_leitura(total_ram, usada_ram),
+            disco: disco,
             rede: rede_atual,
-            tempo_os: tempo_sistema(),
-            data_hora: Local::now().format("%d/%m/%Y - %H:%M").to_string()
+            tempo_os: tempo_sistema(labels.clone()),
+            data_hora: Local::now().format(&labels.sobre.parte_sistema_data_hora_formato).to_string()
         };
 
         let _ = app.emit("DadosMonitor", dados_monitor);

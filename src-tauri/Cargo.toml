@@ -1,6 +1,6 @@
 [package]
 name = "RPanel"
-version = "1.0.0"
+version = "2.0.0"
 description = "RPanel - Monitor de recursos e gerenciamento de processos Linux"
 authors = ["Bruno Barela Fernandes"]
 edition = "2024"

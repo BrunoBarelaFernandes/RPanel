@@ -1,7 +1,7 @@
 import './StatusInternet.css';
 import { Globe } from 'lucide-react';
 
-function StatusInternet({ conectado = true }) {
+function StatusInternet({ conectado = true, labels }) {
   const classeEstado = conectado
     ? 'status-internet--conectado'
     : 'status-internet--desconectado';
@@ -19,8 +19,8 @@ function StatusInternet({ conectado = true }) {
       </span>
 
       <span className="status-internet-texto">
-        <span className="status-internet-rotulo">INTERNET</span>
-        <strong>{conectado ? 'CONECTADO' : 'SEM ACESSO'}</strong>
+        <span className="status-internet-rotulo">{labels?.statusInternetTitulo}</span>
+        <strong>{conectado ? labels?.statusInternetConectado : labels?.statusInternetDesconectado}</strong>
       </span>
 
       <span className="status-internet-indicador" aria-hidden="true" />

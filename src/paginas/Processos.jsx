@@ -1,8 +1,11 @@
+
 import { useState } from 'react';
 import { convertFileSrc, invoke } from "@tauri-apps/api/core";
 import { AppWindow, Cpu, Gpu, MemoryStick } from 'lucide-react';
 import './Processos.css';
-
+import Loading from "../components/Loading";
+import Alert from "../components/Alert";
+import PopUp from "../components/PopUp";
 
 
 function formatarMemoria(valor) {
@@ -28,29 +31,36 @@ function formatarMemoria(valor) {
 }
 
 
-
 function formatarPercentual(valor) {
   if (valor === null || valor === undefined || valor === '') return '—';
   return typeof valor === 'number' ? `${valor.toFixed(1)}%` : valor;
 }
 
 
-
-function Processos({ processos = [], onEncerrar }) {
+function Processos({ labels, processos = [], onEncerrar }) {
   const [pidSelecionado, setPidSelecionado] = useState(null);
+  const [popupAberto, setPopupAberto] = useState(false);
+  const [aplicativoSelecionado, setAplicativoSelecionado] = useState(null);
+
   const processoSelecionado = processos.find((processo) => processo.pid === pidSelecionado);
+
+  async function confirmarEncerramento() {
+    await invoke("encerrar_app", {
+      pid: aplicativoSelecionado.pid,
+    });
+  }
 
   return (
     <main className="pagina-processos">
       <section className="processos-secao" aria-labelledby="processos-titulo">
         <header className="processos-cabecalho">
           <div>
-            <span className="processos-rotulo">GERENCIAMENTO</span>
-            <h2 id="processos-titulo">Processos em execução</h2>
-            <p>Selecione um aplicativo para consultar e encerrar.</p>
+            <span className="processos-rotulo">{labels?.titulo}</span>
+            <h2 id="processos-titulo">{labels?.titulo2}</h2>
+            <p>{labels?.descricao}</p>
           </div>
           <span className="processos-contagem">
-            {processos.length} {processos.length === 1 ? 'processo' : 'processos'}
+            {processos.length} {processos.length === 1 ? labels?.processoQuantidade : labels?.processosQuantidade}
           </span>
         </header>
 
@@ -58,28 +68,43 @@ function Processos({ processos = [], onEncerrar }) {
           <table className="processos-tabela">
             <thead>
               <tr>
-                <th scope="col">Aplicativo</th>
-                <th scope="col"><MemoryStick size={14} aria-hidden="true" /> RAM</th>
-                <th scope="col"><Cpu size={14} aria-hidden="true" /> CPU</th>
-                <th scope="col"><Gpu size={14} aria-hidden="true" /> GPU</th>
+                <th scope="col">{labels?.tituloTabela}</th>
+                <th scope="col"><MemoryStick size={14} aria-hidden="true" /> {labels?.tituloTabelaRam}</th>
+                <th scope="col"><Cpu size={14} aria-hidden="true" /> {labels?.tituloTabelaCpu}</th>
+                <th scope="col"><Gpu size={14} aria-hidden="true" /> {labels?.tituloTabelaGpu}</th>
               </tr>
             </thead>
             <tbody>
               {processos.length === 0 ? (
                 <tr>
                   <td className="processos-vazio" colSpan={4}>
-                    A lista de processos aparecerá aqui.
+                    <label><Loading cor="#1792b5a4" tamanho={40} /></label>
                   </td>
                 </tr>
               ) : (
                 processos.map((processo) => {
                   const selecionado = processo.pid === pidSelecionado;
 
+                  if (processo.pid === 0) {
+                    return (
+                      <tr key={processo.pid}>
+                        <td className="processos-vazio" colSpan={4}>
+                          <span><Alert tamanho={50} /></span>
+                          <br />
+                          <span><b>{labels?.avisoSemProcesso}</b></span>
+                        </td>
+                      </tr>
+                    );
+                  }
+
                   return (
-                    <tr style={{"cursor":"pointer"}} 
-                        onClick={() => setPidSelecionado(selecionado ? null : processo.pid)}
-                        className={selecionado ? 'processo-linha processo-linha--selecionado' : 'processo-linha'} key={processo.pid}>
-                      <td >
+                    <tr
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setPidSelecionado(selecionado ? null : processo.pid)}
+                      className={selecionado ? 'processo-linha processo-linha--selecionado' : 'processo-linha'}
+                      key={processo.pid}
+                    >
+                      <td>
                         <button
                           className="processo-aplicativo"
                           type="button"
@@ -110,25 +135,29 @@ function Processos({ processos = [], onEncerrar }) {
 
         <footer className="processos-rodape">
           <span className="processos-selecao-info">
-            {processoSelecionado ? `Selecionado: ${processoSelecionado.nome}` : 'Nenhum aplicativo selecionado'}
+            {processoSelecionado ? `${labels?.aplicativoSelecionado2}: ${processoSelecionado.nome}` : labels?.aplicativoSelecionado}
           </span>
+
           <button
             className="processos-botao-encerrar"
             type="button"
             disabled={!processoSelecionado}
-            onClick={async () => {
-              try {
-                await invoke("encerrar_app", {
-                  pid: processoSelecionado.pid,
-                });
-              } catch (erro) {
-                console.error("Não foi possível encerrar o aplicativo:", erro);
-              }
+            onClick={() => {
+              setAplicativoSelecionado(processoSelecionado);
+              setPopupAberto(true);
             }}
           >
-            Encerrar aplicativo
+            {labels?.botaoEncerrar}
           </button>
         </footer>
+
+        <PopUp
+          labels={labels}
+          aberto={popupAberto}
+          nomeAplicativo={aplicativoSelecionado?.nome}
+          onConfirmar={confirmarEncerramento}
+          onFechar={() => setPopupAberto(false)}
+        />
       </section>
     </main>
   );

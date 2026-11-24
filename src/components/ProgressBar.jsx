@@ -1,5 +1,6 @@
 import './ProgressBar.css';
 
+
 function ProgressBar({ porcentagem, label, info }) {
   let valor = Number(porcentagem);
   if (valor >= 101){valor=100;}
@@ -52,6 +53,7 @@ function ProgressBar({ porcentagem, label, info }) {
       </div>
 
       <p className="progress-bar-info">{info}</p>
+
     </section>
   );
 }

@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
-import { Activity, Cpu, Gauge, HardDrive, Info, List, MemoryStick, Wifi, EthernetPort, Gpu, Microchip } from 'lucide-react';
+import { Activity, Cpu, Gauge, HardDrive, Info, List, MemoryStick, Wifi, EthernetPort, Gpu, Microchip, Languages } from 'lucide-react';
 import Recursos from './paginas/Recursos';
 import Sobre from './paginas/Sobre';
 import Processos from './paginas/Processos';
 import StatusInternet from './components/StatusInternet';
-
+import PopUpIdiomas from './components/PopUpIdiomas'
 import './App.css';
 
 
 
-const menuItems = [
-  { id: 'recursos', label: 'Recursos', icon: Gauge },
-  { id: 'processos', label: 'Processos', icon: List },
-  { id: 'sobre', label: 'Sobre', icon: Info },
-];
+
+
+
 
 
 function App() {
   const [pagina, setPagina] = useState('recursos');
+  const [att, setAtt] = useState(false);
   const [dadosSistemaRAM, setDadosSistemaRAM] = useState({
     ddr: "", soquetes: "0", instalados: "0", velocidade: "",
   });
@@ -38,18 +37,31 @@ function App() {
   const [dadosSobre, setDadosSobre] = useState({
     nomeOs: "Desconhecido", versaoOs: "Desconhecido", kernel: "Desconhecido", sistemaJanelas: "Desconhecido", nomeHost: "Desconhecido",
     idioma: "Desconhecido", interfaceRede: "Desconhecido", mac: "Desconhecido", ip: "Desconhecido", fabricantePlacaMae: "Desconhecido",
-    modeloPlacaMae: "Desconhecido", versaoFirmware: "Desconhecido", discos: { lista: [] }
+    modeloPlacaMae: "Desconhecido", versaoFirmware: "Desconhecido", discos: { lista: [] }, sobreRpanel: {
+      versao: "Desconhecido",
+      dataVersao: "Desconhecido", dev: "Desconhecido", nomeLinkGitHub: "Desconhecido", enderecoLinkGitHub: "Desconhecido", licenca: "Desconhecido"
+    }
   });
+  const [labels, setLabels] = useState([]);
+  const [idiomas, setIdiomas] = useState([]);
+
 
   const [dadosProcessos, setDadosProcessos] = useState([]);
 
+  const [historicoCPU, setHistoricoCPU] = useState([]);
+  const [historicoRAM, setHistoricoRAM] = useState([]);
+  const [historicoGPU, setHistoricoGPU] = useState([]);
+  const [historicoVRAM, setHistoricoVRAM] = useState([]);
+  const [historicoDownload, setHistoricoDownload] = useState([]);
+  const [historicoUpload, setHistoricoUpload] = useState([]);
 
+  const [popupAberto, setPopupAberto] = useState(false);
 
-  useEffect(() => {
-    const bloquearMenuPadrao = (event) => { event.preventDefault(); };
-    document.addEventListener("contextmenu", bloquearMenuPadrao);
-    return () => { document.removeEventListener("contextmenu", bloquearMenuPadrao); };
-  }, []);
+  // useEffect(() => {
+  //   const bloquearMenuPadrao = (event) => { event.preventDefault(); };
+  //   document.addEventListener("contextmenu", bloquearMenuPadrao);
+  //   return () => { document.removeEventListener("contextmenu", bloquearMenuPadrao); };
+  // }, []);
 
 
   useEffect(() => {
@@ -59,6 +71,12 @@ function App() {
     let cancelarMonitorGPU;
     let cancelarMonitorProcessos;
 
+    invoke('idioma').then((idioma) => {
+      setLabels(idioma);
+    });
+    invoke('lista_idiomas').then((idioma) => {
+      setIdiomas(idioma);
+    });
     async function registrarListeners() {
       const pararmonitor = await listen("DadosMonitor", (event) => {
         setMonitor(event.payload);
@@ -99,7 +117,7 @@ function App() {
       cancelarMonitorGPU?.();
       cancelarMonitorProcessos?.();
     };
-  }, []);
+  }, [att, pagina]);
 
   useEffect(() => {
     let ativo = true;
@@ -119,7 +137,7 @@ function App() {
     return () => {
       ativo = false;
     };
-  }, []);
+  }, [att, pagina]);
 
   useEffect(() => {
     if (pagina === "recursos") {
@@ -135,6 +153,50 @@ function App() {
     }
   }, [pagina]);
 
+
+
+  useEffect(() => {
+    const limite = 300;
+
+    setHistoricoCPU(atual => [
+      ...atual,
+      monitor.cpu.usoPercentual
+    ].slice(-limite));
+
+    setHistoricoRAM(atual => [
+      ...atual,
+      monitor.ram.usoPercentual
+    ].slice(-limite));
+
+    setHistoricoGPU(atual => [
+      ...atual,
+      monitorGPU.usoPercentual
+    ].slice(-limite));
+
+    setHistoricoVRAM(atual => [
+      ...atual,
+      monitorGPU.usoPercentualMemoria
+    ].slice(-limite));
+
+    setHistoricoDownload(atual => [
+      ...atual,
+      monitor.rede.download
+    ].slice(-1800));
+
+    setHistoricoUpload(atual => [
+      ...atual,
+      monitor.rede.upload
+    ].slice(-1800));
+
+  }, [monitor, monitorGPU]);
+
+
+const menuItems = [
+  { id: 'recursos', label: labels.layout?.menuItemRecursos, icon: Gauge },
+  { id: 'processos', label: labels.layout?.menuItemProcessos, icon: List },
+  { id: 'sobre', label: labels.layout?.menuItemSobre, icon: Info },
+];
+
   return (
     <main className="estrutura-aplicativo">
       <aside className="menu-lateral">
@@ -142,7 +204,7 @@ function App() {
           <img className="marca-simbolo" src="logo.png" />
         </a>
 
-        <span className="menu-lateral-titulo">MENU</span>
+        <span className="menu-lateral-titulo">{labels.layout?.menuTitulo}</span>
         <nav className="menu-lateral-navegacao" aria-label="Menu principal">
           {menuItems.map((item) => (
             <button
@@ -161,22 +223,23 @@ function App() {
         </nav>
 
         <div className="menu-lateral-rodape">
-          <span className="menu-lateral-ponto-status" />
-          <span>RPanel 1.0.0</span>
+          <div className="btn-idioma" onClick={() => setPopupAberto(true)}>
+            <Languages size={20}/> <label><b>{labels?.infoIdioma?.idioma}</b></label>
+            </div>
         </div>
       </aside>
 
       <section className="area-principal">
         <header className="cabecalho">
           <div className="cabecalho-titulo-container">
-            <span className="rotulo-superior">RPanel / PAINEL</span>
+            <span className="rotulo-superior">{labels.layout?.titulo}</span>
             <h1>{menuItems.find((item) => item.id === pagina)?.label}</h1>
           </div>
 
 
 
 
-          <StatusInternet conectado={IndicadorInternet} />
+          <StatusInternet conectado={IndicadorInternet} labels={labels.layout} />
 
 
 
@@ -185,11 +248,42 @@ function App() {
 
         </header>
 
-        {pagina === 'recursos' && (<Recursos monitor={monitor} monitorGPU={monitorGPU} dadosSistemaRAM={dadosSistemaRAM} />)}
-        {pagina === 'sobre' && <Sobre monitor={monitor} monitorGPU={monitorGPU} dadosSistemaRAM={dadosSistemaRAM} dadosSobre={dadosSobre} />}
-        {pagina === 'processos' && <Processos processos={dadosProcessos} />}
+        {pagina === 'recursos' && (
+          <Recursos 
+          labels={labels.recurso}
+          labelsAvisos={labels.avisoValores}
+          monitor={monitor} 
+          monitorGPU={monitorGPU}
+          dadosSistemaRAM={dadosSistemaRAM}
+          historicoCPU={historicoCPU}
+          historicoRAM={historicoRAM}
+          historicoGPU={historicoGPU}
+          historicoVRAM={historicoVRAM}
+          historicoDownload={historicoDownload}
+          historicoUpload={historicoUpload}
+        />)}
+        {pagina === 'sobre' && 
+        <Sobre 
+         labels={labels.sobre}
+         labelsAvisos={labels.avisoValores}
+         monitor={monitor}
+         monitorGPU={monitorGPU}
+         dadosSistemaRAM={dadosSistemaRAM}
+         dadosSobre={dadosSobre} 
+         />}
+        {pagina === 'processos' && <Processos labels={labels.processo} processos={dadosProcessos} />}
 
       </section>
+
+
+<PopUpIdiomas
+    labels={labels}
+    aberto={popupAberto}
+    idiomasDisponiveis={idiomas}
+    onFechar={() => setPopupAberto(false)}
+    att={() => {setAtt(!att)}}
+/>
+
     </main>
   );
 }

@@ -1,7 +1,4 @@
-use std::{thread, time::Duration};
-use std::sync::{Arc, Mutex, mpsc};
-use std::{process::Command, sync::OnceLock};
-use chrono::format::parse;
+use std::{process::Command};
 
 
 pub(crate) fn pid(nome: &str)->u32{

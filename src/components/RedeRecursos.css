@@ -10,7 +10,7 @@
   margin: 20px 0 14px;
 }
 
-.rede-recursos__linha {
+.rede-recursos_linha {
   position: relative;
   display: grid;
   min-height: 49px;
@@ -24,7 +24,7 @@
   background: rgba(139, 161, 197, 0.035);
 }
 
-.rede-recursos__linha::before {
+.rede-recursos_linha::before {
   position: absolute;
   inset: 0 auto 0 0;
   width: 2px;
@@ -32,15 +32,15 @@
   opacity: 0.55;
 }
 
-.rede-recursos__linha--download::before {
+.rede-recursos_linha_download::before {
   background: #61dafb;
 }
 
-.rede-recursos__linha--upload::before {
+.rede-recursos_linha_upload::before {
   background: #a678ff;
 }
 
-.rede-recursos__icone {
+.rede-recursos_icone {
   display: grid;
   width: 30px;
   height: 30px;
@@ -51,32 +51,32 @@
   background: rgba(255, 255, 255, 0.025);
 }
 
-.rede-recursos__linha--download .rede-recursos__icone {
+.rede-recursos_linha_download .rede-recursos_icone {
   color: #61dafb;
 }
 
-.rede-recursos__linha--upload .rede-recursos__icone {
+.rede-recursos_linha_upload .rede-recursos_icone {
   color: #a678ff;
 }
 
-.rede-recursos__linha--ativa .rede-recursos__icone {
+.rede-recursos_linha_ativa .rede-recursos_icone {
   animation: rede-recursos-piscar 0.3s ease-in-out infinite;
 }
 
-.rede-recursos__descricao {
+.rede-recursos_descricao {
   display: flex;
   min-width: 0;
   flex-direction: column;
   gap: 3px;
 }
 
-.rede-recursos__rotulo {
+.rede-recursos_rotulo {
   color: #c5d0df;
   font-size: 10px;
   font-weight: 650;
 }
 
-.rede-recursos__estado {
+.rede-recursos_estado {
   overflow: hidden;
   color: #7f8da2;
   font-size: 9px;
@@ -84,7 +84,7 @@
   white-space: nowrap;
 }
 
-.rede-recursos__valor {
+.rede-recursos_valor {
   display: flex;
   align-items: baseline;
   gap: 4px;
@@ -93,10 +93,15 @@
   font-variant-numeric: tabular-nums;
 }
 
-.rede-recursos__valor small {
+.rede-recursos_valor small {
   color: #8290a5;
   font-size: 9px;
   font-weight: 500;
+}
+
+.gra {
+  position: relative;
+  top: -1000px;
 }
 
 @keyframes rede-recursos-piscar {
@@ -106,7 +111,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rede-recursos__linha--ativa .rede-recursos__icone {
+  .rede-recursos_linha_ativa .rede-recursos_icone {
     animation: none;
   }
 }

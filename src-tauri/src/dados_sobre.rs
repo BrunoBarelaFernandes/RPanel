@@ -1,17 +1,15 @@
-use std::{ path::Path, thread, time::Duration};
-
-use sysinfo::{Components, DiskKind, Disks, Networks, System};
 
 use crate::rede::{interface_rede_atual, rede_mac, rede_ip};
 use crate::disco::{disco_lista};
+use crate::MONITOR;
+use crate::INFO_RPANEL;
 use std::fs;
 use std::env;
 use crate::{
     modelos::{DadosSobre, ListaDisco},
 };
 
-const GB: f64 = 1_073_741_824.0;
-const MB: f64 = 1_048_576.0;
+use sysinfo::System;
 
 //Verifica idioma local sistema linux
 fn idioma_sistema() -> String {
@@ -63,35 +61,49 @@ fn sistema_janelas() -> String {
 #[tauri::command]
 pub(crate) fn info() -> DadosSobre{
     let mut dados = DadosSobre {
-        nome_os: "Indefinido".to_string(),
-        versao_os: "Indefinido".to_string(),
-        kernel: "Indefinido".to_string(),
-        sistema_janelas: "Indefinido".to_string(),
-        nome_host: "Indefinido".to_string(),
-        idioma: "Indefinido".to_string(),
-        interface_rede: "Indefinido".to_string(),
-        mac: "Indefinido".to_string(),
-        ip: "Indefinido".to_string(),
-        fabricante_placa_mae: "Indefinido".to_string(),
-        modelo_placa_mae: "Indefinido".to_string(),
-        versao_firmware: "Indefinido".to_string(),
+        nome_os: "".to_string(),
+        versao_os: "".to_string(),
+        kernel: "".to_string(),
+        sistema_janelas: "".to_string(),
+        nome_host: "".to_string(),
+        idioma: "".to_string(),
+        interface_rede: "".to_string(),
+        mac: "".to_string(),
+        ip: "".to_string(),
+        fabricante_placa_mae: "".to_string(),
+        modelo_placa_mae: "".to_string(),
+        versao_firmware: "".to_string(),
         discos: ListaDisco {lista: Vec::new(),},
+        sobre_rpanel: INFO_RPANEL.clone(),
     };
     
 
-    dados.nome_os = System::name().unwrap_or_else(|| "Desconhecido".to_string());
-    dados.versao_os = System::os_version().unwrap_or_else(|| "Desconhecido".to_string());
-    dados.kernel = System::kernel_version().unwrap_or_else(|| "Desconhecido".to_string());
+    dados.nome_os = System::name().unwrap_or_else(|| "".to_string());
+    dados.versao_os = System::os_version().unwrap_or_else(|| "".to_string());
+    dados.kernel = System::kernel_version().unwrap_or_else(|| "".to_string());
     dados.sistema_janelas=sistema_janelas();
-    dados.nome_host = System::host_name().unwrap_or_else(|| "Desconhecido".to_string());
+    dados.nome_host = System::host_name().unwrap_or_else(|| "".to_string());
     dados.idioma = idioma_sistema();
-    dados.interface_rede = interface_rede_atual().expect("REASON");
-    dados.mac = rede_mac(interface_rede_atual());
-    dados.ip = rede_ip(interface_rede_atual());
+
+
+    let interface = interface_rede_atual();
+
+
+    dados.interface_rede = interface.clone().unwrap_or_else(|| "".to_string());
+
+    {
+        let monitor = MONITOR.get().unwrap().lock().unwrap();
+
+        dados.mac = rede_mac(&monitor.redes, interface.clone());
+        dados.ip = rede_ip(&monitor.redes, interface);
+    }
+
     dados.fabricante_placa_mae=ler_dmi("board_vendor");
     dados.modelo_placa_mae=ler_dmi("board_name");
     dados.versao_firmware=ler_dmi("bios_version");
-    dados.discos.lista=disco_lista();
+    
+    let monitor = MONITOR.get().unwrap().lock().unwrap();
+    dados.discos.lista = disco_lista(&monitor.discos);
 
     dados
 

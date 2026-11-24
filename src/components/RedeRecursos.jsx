@@ -30,7 +30,7 @@ function formatarVelocidade(mbPorSegundo = 0) {
   };
 }
 
-function RedeRecursos({ recebimento = 0, envio = 0 }) {
+function RedeRecursos({ recebimento = 0, envio = 0, labels }) {
   const baixando = Number(recebimento) > 0.0001;
   const enviando = Number(envio) > 0.0001;
   const download = formatarVelocidade(recebimento);
@@ -38,49 +38,43 @@ function RedeRecursos({ recebimento = 0, envio = 0 }) {
 
   return (
     <div className="rede-recursos">
-      <div
-        className={`rede-recursos__linha rede-recursos__linha--download ${
-          baixando ? 'rede-recursos__linha--ativa' : ''
-        }`}
-      >
-        <span className="rede-recursos__icone" aria-hidden="true">
+      <div className={`rede-recursos_linha rede-recursos_linha_download ${baixando ? 'rede-recursos_linha_ativa' : ''}`}>
+        <span className="rede-recursos_icone">
           <ArrowDownToLine size={17} strokeWidth={1.8} />
         </span>
 
-        <div className="rede-recursos__descricao">
-          <span className="rede-recursos__rotulo">Download</span>
-          <span className="rede-recursos__estado">
-            {baixando ? 'Recebendo dados' : 'Sem tráfego'}
+        <div className="rede-recursos_descricao">
+          <span className="rede-recursos_rotulo">{labels?.redeDownload}</span>
+          <span className="rede-recursos_estado">
+            {baixando ? labels?.redeLabelDownload : labels?.redeSemTrafego}
           </span>
         </div>
 
-        <strong className="rede-recursos__valor">
+        <strong className="rede-recursos_valor">
           {download.valor}
           <small>{download.unidade}</small>
         </strong>
       </div>
 
-      <div
-        className={`rede-recursos__linha rede-recursos__linha--upload ${
-          enviando ? 'rede-recursos__linha--ativa' : ''
-        }`}
-      >
-        <span className="rede-recursos__icone" aria-hidden="true">
-          <ArrowUpFromLine size={17} strokeWidth={1.8} />
-        </span>
 
-        <div className="rede-recursos__descricao">
-          <span className="rede-recursos__rotulo">Upload</span>
-          <span className="rede-recursos__estado">
-            {enviando ? 'Enviando dados' : 'Sem tráfego'}
+      <div className={`rede-recursos_linha rede-recursos_linha_upload ${enviando ? 'rede-recursos_linha_ativa' : ''}`}>      <span className="rede-recursos_icone">
+        <ArrowUpFromLine size={17} strokeWidth={1.8} />
+      </span>
+
+        <div className="rede-recursos_descricao">
+          <span className="rede-recursos_rotulo">{labels?.redeUpload}</span>
+          <span className="rede-recursos_estado">
+            {enviando ? labels?.redeLabelUpload : labels?.redeSemTrafego}
           </span>
         </div>
 
-        <strong className="rede-recursos__valor">
+        <strong className="rede-recursos_valor">
           {upload.valor}
           <small>{upload.unidade}</small>
         </strong>
       </div>
+
+
     </div>
   );
 }

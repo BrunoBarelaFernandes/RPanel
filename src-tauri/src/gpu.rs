@@ -1,8 +1,7 @@
-use std::{ path::Path, thread, time::Duration};
+use std::{thread, time::Duration};
 
-use sysinfo::{Components, DiskKind, Disks, Networks, System};
 use tauri::Emitter;
-use gfxinfo::{active_gpu, GpuInfo};
+use gfxinfo::{active_gpu};
 
 use crate::{
     modelos::{DadosGPU},
@@ -10,13 +9,12 @@ use crate::{
 use crate::MONITOR_GPU;
 
 
-const GB: f64 = 1_073_741_824.0;
-const MB: f64 = 1_048_576.0;
 
 pub(crate) fn monitorar_gpu(app: tauri::AppHandle){
 
     loop{
         if !*MONITOR_GPU.lock().unwrap() {
+            thread::sleep(Duration::from_millis(200));
             continue;
         }
     thread::sleep(Duration::from_secs(1));

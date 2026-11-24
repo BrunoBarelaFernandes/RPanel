@@ -1,12 +1,7 @@
-use std::{thread, time::Duration};
-use std::sync::{Arc, Mutex, mpsc};
-use std::{process::Command, sync::OnceLock};
-use chrono::format::parse;
+use std::{process::Command};
 use std::fs;
 use std::env;
 use std::path::PathBuf;
-use std::path::Path;
-use icon_finder::find_icon;
 use crate::processos::{pids_da_arvore, resolver_icone};
 
 pub(crate) fn pid(pid_steam: u32) -> Option<u32> {

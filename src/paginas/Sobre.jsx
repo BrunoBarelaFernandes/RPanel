@@ -16,6 +16,7 @@ import {
   RefreshCcwDot,
   Code,
   Calendar,
+  Scale,
 
 } from 'lucide-react';
 import './Sobre.css';
@@ -23,7 +24,7 @@ import CardSecao from '../components/CardSecao';
 
 
 
-function GithubIcon({ size = 40, color = "currentColor", className = "" }) {
+function GithubIcon({ labels, size = 40, color = "currentColor", className = "" }) {
   return (
     <svg 
       xmlns="http://www.w3.org/2000/svg" 
@@ -85,47 +86,49 @@ function formatarMemoria2(valor) {
   return `${formatar(Math.floor(bytes / MB))} MB`;
 }
 
-function Sobre({monitor, monitorGPU, dadosSistemaRAM, dadosSobre}) {
+function Sobre({labels, labelsAvisos, monitor, monitorGPU, dadosSistemaRAM, dadosSobre}) {
 
 
 let dadosRAM = monitor.ram.usoPercentual
-                ? `${dadosSistemaRAM.ddr} · ${dadosSistemaRAM.instalados}/${dadosSistemaRAM.soquetes} pentes · ${dadosSistemaRAM.velocidade} · ${formatarMemoria2(monitor.ram.total)}`
-                : 'Indefinido'
+                ? `${dadosSistemaRAM.ddr} · ${dadosSistemaRAM.instalados}/${dadosSistemaRAM.soquetes} ${labels?.parteHardwareRamPentes} · ${dadosSistemaRAM.velocidade} · ${formatarMemoria2(monitor.ram.total)}`
+                : labelsAvisos.indefinido
 
 const dadosSistema = [
-  { rotulo: 'Sistema operacional', valor: dadosSobre.nomeOs+" "+dadosSobre.versaoOs, icone: Monitor },
-  { rotulo: 'Nome da máquina', valor: dadosSobre.nomeHost, icone: MonitorCog },
-  { rotulo: 'Kernel', valor: dadosSobre.kernel, icone: Microchip },
-  { rotulo: 'Sistema de Janelas', valor: dadosSobre.sistemaJanelas, icone: Grid2x2 },
-  { rotulo: 'Idioma', valor: dadosSobre.idioma, icone: Languages },
-  { rotulo: 'Tempo do sistema', valor: monitor.tempoOs, icone: Clock3 },
-  { rotulo: 'Data e hora', valor: monitor.dataHora, icone: CalendarDays },
-  { rotulo: 'Endereço MAC', valor: dadosSobre.mac, icone: Network },
-  { rotulo: 'Endereço IP', valor: dadosSobre.ip, icone: Network },
-  { rotulo: 'Interface de rede atual', valor: dadosSobre.interfaceRede, icone: Network },
-  { rotulo: 'Placa mãe', valor: dadosSobre.fabricantePlacaMae != "-" ? dadosSobre.fabricantePlacaMae+" "+dadosSobre.modeloPlacaMae : "Indisponível", icone: CircuitBoard },
-  { rotulo: 'Versão firmware', valor: dadosSobre.versaoFirmware, icone: FileSliders },
+  { rotulo: labels?.parteSistemaOs, valor: dadosSobre.nomeOs+" "+dadosSobre.versaoOs, icone: Monitor },
+  { rotulo: labels?.parteSistemaNomeHost, valor: dadosSobre.nomeHost, icone: MonitorCog },
+  { rotulo: labels?.parteSistemaKernel, valor: dadosSobre.kernel, icone: Microchip },
+  { rotulo: labels?.parteSistemaSistemaJanelas, valor: dadosSobre.sistemaJanelas, icone: Grid2x2 },
+  { rotulo: labels?.parteSistemaIdioma, valor: dadosSobre.idioma, icone: Languages },
+  { rotulo: labels?.parteSistemaTempoSistema, valor: monitor.tempoOs, icone: Clock3 },
+  { rotulo: labels?.parteSistemaDataHora, valor: monitor.dataHora, icone: CalendarDays },
+  { rotulo: labels?.parteSistemaEnderecoMac, valor: dadosSobre.mac, icone: Network },
+  { rotulo: labels?.parteSistemaEnderecoIp, valor: dadosSobre.ip, icone: Network },
+  { rotulo: labels?.parteSistemaInterfaceRede, valor: dadosSobre.interfaceRede, icone: Network },
+  { rotulo: labels?.parteSistemaPlacaMae, valor: dadosSobre.fabricantePlacaMae != "-" ? dadosSobre.fabricantePlacaMae+" "+dadosSobre.modeloPlacaMae : labelsAvisos.indisponivel, icone: CircuitBoard },
+  { rotulo: labels?.parteSistemaVersaoFirmware, valor: dadosSobre.versaoFirmware, icone: FileSliders },
 ];
 
 const recursos = [
-  { rotulo: 'Processador', valor: monitor.cpu.modelo, icone: Cpu },
-  { rotulo: 'RAM', valor: dadosRAM, icone: MemoryStick },
-  { rotulo: 'Disco do sistema', valor: monitor.disco.usoPercentual ? monitor.disco.tipo+" · "+formatarMemoria(monitor.disco.total):"Indefinido", icone: HardDrive },
-  { rotulo: 'Memória de vídeo', valor: monitorGPU.memoriaTotal ? "Fabricante: "+monitorGPU.fabricante+" · Total: "+formatarMemoria2(monitorGPU.memoriaTotal)+" · Usada: "+formatarMemoria(monitorGPU.memoriaUsada)+" · Livre: "+formatarMemoria(monitorGPU.memoriaRestante) : "Memoria de vídeo indisponível!", icone: Microchip },
-  { rotulo: 'GPU', valor: monitorGPU.usoPercentual || monitorGPU.modelo != "Desconhecido" || monitorGPU.temperatura ? monitorGPU.modelo : "GPU indisponível!", icone: Gpu },
+  { rotulo: labels?.parteHardwareCpu, valor: monitor.cpu.modelo, icone: Cpu },
+  { rotulo: labels?.parteHardwareRam, valor: dadosRAM, icone: MemoryStick },
+  { rotulo: labels?.parteHardwareDisco, valor: monitor.disco.usoPercentual ? monitor.disco.tipo+" · "+formatarMemoria(monitor.disco.total):labelsAvisos.indefinido, icone: HardDrive },
+  { rotulo: labels?.parteHardwareVram, valor: monitorGPU.memoriaTotal ? labels?.parteHardwareVramFabricante+" "+monitorGPU.fabricante+" · "+labels?.parteHardwareVramTotal+" "+formatarMemoria2(monitorGPU.memoriaTotal)+" · "+labels?.parteHardwareVramUsada+" "+formatarMemoria(monitorGPU.memoriaUsada)+" · "+labels?.parteHardwareVramLivre+" "+formatarMemoria(monitorGPU.memoriaRestante) : labelsAvisos.semMemoriaVideo, icone: Microchip },
+  { rotulo: labels?.parteHardwareGpu, valor: monitorGPU.usoPercentual || monitorGPU.modelo != labelsAvisos.desconhecido || monitorGPU.temperatura ? monitorGPU.modelo : labelsAvisos.semGpu, icone: Gpu },
 ];
 
-const discos = [
-  { nome: '/', tipo: 'SSD', total: '400 GB', usado: '200 GB', livre: '200 GB' },
-  { nome: 'Dados1', tipo: 'HD', total: '400 GB', usado: '250 GB', livre: '150 GB' },
-  { nome: 'Dados2', tipo: 'HD', total: '450 GB', usado: '350 GB', livre: '100 GB' },
-];
+// const discos = [
+//   { nome: '/', tipo: 'SSD', total: '400 GB', usado: '200 GB', livre: '200 GB' },
+//   { nome: 'Dados1', tipo: 'HD', total: '400 GB', usado: '250 GB', livre: '150 GB' },
+//   { nome: 'Dados2', tipo: 'HD', total: '450 GB', usado: '350 GB', livre: '100 GB' },
+// ];
 
 const sobre = [
-  { rotulo: 'Versão', valor: "1.0.0", icone: RefreshCcwDot },
-  { rotulo: 'Data Versão', valor: "16/11/2026", icone: Calendar },
-  { rotulo: 'Desenvolvedor', valor: "Bruno Barela Fernandes", icone: Code },
-  { rotulo: 'GitHub', link: "https://github.com/BrunoBarelaFernandes", valor: "github.com/BrunoBarelaFernandes", icone: GithubIcon },
+  { rotulo: labels?.parteSobreVersao, valor: dadosSobre.sobreRpanel.versao, icone: RefreshCcwDot },
+  { rotulo: labels?.parteSobreDataVersao, valor: dadosSobre.sobreRpanel.dataVersao, icone: Calendar },
+  { rotulo: labels?.parteSobreDev, valor: dadosSobre.sobreRpanel.dev, icone: Code },
+  { rotulo: "GitHub", link: dadosSobre.sobreRpanel.enderecoLinkGitHub, valor: dadosSobre.sobreRpanel.nomeLinkGitHub, icone: GithubIcon },
+  { rotulo: labels?.parteSobreLicenca, valor: dadosSobre.sobreRpanel.licenca, icone: Scale },
+
 ];
 
   return (
@@ -133,18 +136,18 @@ const sobre = [
 
 
       <CardSecao 
-       rotulo="VISÃO GERAL"
-       titulo="Sistema"
-       descricao="Identificação e estado atual do computador."
+       rotulo={labels?.parteSistemaTitulo}
+       titulo={labels?.parteSistemaTitulo2}
+       descricao={labels?.parteSistemaDescricao}
        icone={Monitor}
        display={1}
        dados={dadosSistema} 
         />
 
       <CardSecao 
-       rotulo="HARDWARE"
-       titulo="Recursos"
-       descricao="Componentes instalados neste sistema."
+       rotulo={labels?.parteHardwareTitulo}
+       titulo={labels?.parteHardwareTitulo2}
+       descricao={labels?.parteHardwareDescricao}
        icone={Cpu}
        display={2}
        dados={recursos} 
@@ -157,9 +160,9 @@ const sobre = [
       <section className="sobre-secao" aria-labelledby="sobre-discos-titulo">
         <div className="sobre-secao-cabecalho">
           <div>
-            <span className="sobre-rotulo">ARMAZENAMENTO</span>
-            <h2 id="sobre-discos-titulo">Lista de discos</h2>
-            <p>Capacidade e espaço disponível por unidade.</p>
+            <span className="sobre-rotulo">{labels?.parteArmazenamentoTitulo}</span>
+            <h2 id="sobre-discos-titulo">{labels?.parteArmazenamentoTitulo2}</h2>
+            <p>{labels?.parteArmazenamentoDescricao}</p>
           </div>
           <HardDrive className="sobre-secao-icone" aria-hidden="true" size={20} />
         </div>
@@ -168,11 +171,11 @@ const sobre = [
           <table className="sobre-tabela-discos">
             <thead>
               <tr>
-                <th>Unidade</th>
-                <th>Tipo</th>
-                <th>Total</th>
-                <th>Usado</th>
-                <th>Livre</th>
+                <th>{labels?.parteArmazenamentoTituloTabela}</th>
+                <th>{labels?.parteArmazenamentoTituloTabelaTipo}</th>
+                <th>{labels?.parteArmazenamentoTituloTabelaTotal}</th>
+                <th>{labels?.parteArmazenamentoTituloTabelaUsado}</th>
+                <th>{labels?.parteArmazenamentoTituloTabelaLivre}</th>
               </tr>
             </thead>
             <tbody>
@@ -180,7 +183,7 @@ const sobre = [
                 <tr className={indice === 0 ? 'disco-principal' : ''} key={disco.dispositivo}>
                   <td>
                     <span className="disco-nome"><HardDrive size={15} />{disco.dispositivo}</span>
-                    {indice === 0 && <span className="disco-sistema">SISTEMA</span>}
+                    {indice === 0 && <span className="disco-sistema">{labels?.parteArmazenamentoMarcaSistemaTabela}</span>}
                   </td>
                   <td><span className="disco-tipo">{disco.tipo}</span></td>
                   <td>{formatarMemoria(disco.total)}</td>
@@ -194,9 +197,9 @@ const sobre = [
       </section>
 
       <CardSecao 
-       rotulo="SOBRE"
-       titulo="Informações"
-       descricao="Informações do RPanel"
+       rotulo={labels?.parteSobreTitulo}
+       titulo={labels?.parteSobreTitulo2}
+       descricao={labels?.parteSobreDescricao}
        icone={Cpu}
        display={1}
        dados={sobre} 

@@ -2,23 +2,33 @@ import './CardRecursos.css';
 import ProgressBar from './ProgressBar';
 import RedeRecursos from './RedeRecursos';
 import { Cpu, Thermometer, CircleAlert } from 'lucide-react';
+import Grafico from './Graficos';
+
+
+
 
 function CardRecursos({
   tipo = 0,
   ativado = true,
   icone: Icone = Cpu,
-  titulo = "COMPONENTE DE SISTEMA",
-  infocard = "Sem informação!",
+  titulo = "",
+  infocard = "",
   temperatura = null,
   download = 0,
   upload = 0,
   porcentagem = 0,
   label = "",
   info = "",
+  historico = [],
+  historico2 = [],
+  labelTemperatura="",
+  labelDetalhes="",
+  labels,
+  labelsAvisos
 }) {
   let opacity=1;
-  titulo = (titulo === null || titulo === "") ? "COMPONENTE DE SISTEMA" : titulo;
-  infocard = (infocard === null || infocard.length === 0) ? "Sem informação!" : infocard;
+  titulo = (titulo === null || titulo === "") ? labelsAvisos?.componenteSistema : titulo;
+  infocard = (infocard === null || infocard.length === 0) ? labelsAvisos?.semInformacao : infocard;
   tipo = (tipo === null || tipo.length === 0) ? 0 : tipo;
   porcentagem = Number(porcentagem) || 0;
   const numero = Number(porcentagem);
@@ -50,20 +60,27 @@ function CardRecursos({
         <span>{titulo}</span>
       </div>
 
-      {tipo === 0 ? <div className="alerta_sem_modelo"><CircleAlert size={50}/><h2>SEM MODELO DE DADOS!</h2></div>:""}
+      {tipo === 0 ? <div className="alerta_sem_modelo"><CircleAlert size={50}/><h2>{labelsAvisos?.semModeloDados}</h2></div>:""}
       {tipo === "GeigerBar" ? <ProgressBar porcentagem={valor} label={label} info={info} /> : ''}
-      {tipo === "GraficoRede" ? <RedeRecursos recebimento={download} envio={upload} /> : ''}
-
+      {tipo === "GraficoRede" ? 
+        <>
+          <RedeRecursos recebimento={download} envio={upload} labels={labels} /> 
+          <Grafico historico={historico} cor="#61dafb" top={200} />
+          <Grafico className="grarede" historico={historico2} cor="#a855f7" top={200} />
+        </>
+      : ''}
+      {tipo != "GraficoRede" ? <Grafico className="graficoCard" historico={historico} cor={cor} /> : ''}
+      <div className="br"></div>
       {temperatura ? <div className="cartao-recurso-rodape cartao-recurso-rodape-temperatura">
         <span className="cartao-recurso-rotulo-temperatura">
           <Thermometer aria-hidden="true" size={15} strokeWidth={1.8} />
-          Temperatura
+          {labelTemperatura}
         </span>
         <strong>{temperatura ?? '—'}{temperatura != null ? ' °C' : ''}</strong>
       </div>:""}
 
       <div className="cartao-recurso-rodape cartao-recurso-rodape-detalhes">
-        <span>Detalhes: </span>
+        <span>{labelDetalhes} </span>
         <strong>{infocard}</strong>
       </div>
     </article>
