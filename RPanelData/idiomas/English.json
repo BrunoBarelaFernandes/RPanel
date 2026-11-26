@@ -1,4 +1,3 @@
-
 {
   "infoIdioma": {
     "idioma": "English",
@@ -90,6 +89,7 @@
     "parteSistemaNomeHost": "Hostname",
     "parteSistemaKernel": "Kernel",
     "parteSistemaSistemaJanelas": "Windowing System",
+    "parteSistemaAmbienteGrafico": "Desktop Environment",
     "parteSistemaIdioma": "Language",
     "parteSistemaTempoSistema": "System Uptime",
     "parteSistemaTempoSistemaLabel": "{dias} days, {horas} hours",
@@ -98,10 +98,12 @@
     "parteSistemaDataHora": "Date and Time",
     "parteSistemaDataHoraFormato": "%m/%d/%Y, %I:%M %p",
     "parteSistemaEnderecoMac": "MAC Address",
+    "parteSistemaEnderecoGateway": "Gateway Address",
     "parteSistemaEnderecoIp": "IP Address",
     "parteSistemaInterfaceRede": "Active Network Interface",
     "parteSistemaPlacaMae": "Motherboard",
     "parteSistemaVersaoFirmware": "Firmware Version",
+    "parteSistemaMonitor": "Monitor",
     "parteHardwareTitulo": "HARDWARE",
     "parteHardwareTitulo2": "Resources",
     "parteHardwareDescricao": "Hardware components installed in this system.",
@@ -130,7 +132,15 @@
     "parteSobreVersao": "Version",
     "parteSobreDataVersao": "Release Date",
     "parteSobreDev": "Developer",
-    "parteSobreLicenca": "License"
+    "parteSobreLicenca": "License",
+    "parteSobreDoacaoTitulo": "Support RPanel with a Contribution",
+    "parteSobreDoacaoTexto": "Click here to contribute",
+    "parteSobreDoacaoPopupDescricao": "Select a contribution method",
+    "parteSobreDoacaoPopupDescricaoQrPix": "Scan the QR code to contribute via Pix",
+    "parteSobreDoacaoPopupBotaoConfirmar": "Confirm",
+    "parteSobreDoacaoPopupBotaoCancelar": "Cancel",
+    "parteSobreDoacaoPopupBotaoVoltar": "Back",
+    "parteSobreDoacaoPopupBotaoFechar": "Close"
   },
   "avisoValores": {
     "semGpu": "GPU Unavailable!",

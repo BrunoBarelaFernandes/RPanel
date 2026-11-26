@@ -86,10 +86,12 @@
     "parteSistemaTitulo": "VISÃO GERAL",
     "parteSistemaTitulo2": "Sistema",
     "parteSistemaDescricao": "Identificação e estado atual do computador.",
+
     "parteSistemaOs": "Sistema operacional",
     "parteSistemaNomeHost": "Nome da máquina",
     "parteSistemaKernel": "Kernel",
     "parteSistemaSistemaJanelas": "Sistema de janelas",
+    "parteSistemaAmbienteGrafico": "Ambiente gráfico",
     "parteSistemaIdioma": "Idioma",
     "parteSistemaTempoSistema": "Tempo do sistema",
     "parteSistemaTempoSistemaLabel": "{dias} dias, {horas} horas",
@@ -98,10 +100,13 @@
     "parteSistemaDataHora": "Data e hora",
     "parteSistemaDataHoraFormato": "%d/%m/%Y - %H:%M",
     "parteSistemaEnderecoMac": "Endereço MAC",
+    "parteSistemaEnderecoGateway": "Endereço gateway",
     "parteSistemaEnderecoIp": "Endereço IP",
     "parteSistemaInterfaceRede": "Interface de rede atual",
     "parteSistemaPlacaMae": "Placa-mãe",
     "parteSistemaVersaoFirmware": "Versão do firmware",
+    "parteSistemaMonitor": "Monitor",
+
     "parteHardwareTitulo": "HARDWARE",
     "parteHardwareTitulo2": "Recursos",
     "parteHardwareDescricao": "Componentes instalados nesse sistema.",
@@ -131,7 +136,15 @@
     "parteSobreVersao": "Versão",
     "parteSobreDataVersao": "Data da versão",
     "parteSobreDev": "Desenvolvedor",
-    "parteSobreLicenca": "Licença"
+    "parteSobreLicenca": "Licença",
+    "parteSobreDoacaoTitulo": "Ajude o RPanel com uma contribuição",
+    "parteSobreDoacaoTexto": "Clique aqui para ajudar ",
+    "parteSobreDoacaoPopupDescricao": "Selecione a forma de contribuição",
+    "parteSobreDoacaoPopupDescricaoQrPix": "Escaneie o QR Code para contribuir via Pix",
+    "parteSobreDoacaoPopupBotaoConfirmar": "Confirmar",
+    "parteSobreDoacaoPopupBotaoCancelar": "Cancelar",
+    "parteSobreDoacaoPopupBotaoVoltar": "Voltar",
+    "parteSobreDoacaoPopupBotaoFechar": "Fechar"
   },
   "avisoValores": {
     "semGpu": "GPU indisponível!",

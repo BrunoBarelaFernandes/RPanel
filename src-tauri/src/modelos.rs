@@ -18,14 +18,17 @@ pub(crate) struct DadosSobre {
     pub(crate) versao_os: String,
     pub(crate) kernel: String,
     pub(crate) sistema_janelas: String,
+    pub(crate) ambiente_grafico: String,
     pub(crate) nome_host: String,
     pub(crate) idioma: String,
     pub(crate) interface_rede: String,
+    pub(crate) gateway: String,
     pub(crate) mac: String,
     pub(crate) ip: String,
     pub(crate) fabricante_placa_mae: String,
     pub(crate) modelo_placa_mae: String,
     pub(crate) versao_firmware: String,
+    pub(crate) monitor: String,
     pub(crate) discos: ListaDisco,
     pub(crate) sobre_rpanel: InfoRPanel,
 
@@ -273,10 +276,12 @@ pub(crate) struct SobreLabel {
     pub(crate) parte_sistema_titulo: String,
     pub(crate) parte_sistema_titulo2: String,
     pub(crate) parte_sistema_descricao: String,
+
     pub(crate) parte_sistema_os: String,
     pub(crate) parte_sistema_nome_host: String,
     pub(crate) parte_sistema_kernel: String,
     pub(crate) parte_sistema_sistema_janelas: String,
+    pub(crate) parte_sistema_ambiente_grafico: String,
     pub(crate) parte_sistema_idioma: String,
 
     pub(crate) parte_sistema_tempo_sistema: String,
@@ -287,10 +292,12 @@ pub(crate) struct SobreLabel {
     pub(crate) parte_sistema_data_hora: String,
     pub(crate) parte_sistema_data_hora_formato: String,
     pub(crate) parte_sistema_endereco_mac: String,
+    pub(crate) parte_sistema_endereco_gateway: String,
     pub(crate) parte_sistema_endereco_ip: String,
     pub(crate) parte_sistema_interface_rede: String,
     pub(crate) parte_sistema_placa_mae: String,
     pub(crate) parte_sistema_versao_firmware: String,
+    pub(crate) parte_sistema_monitor: String,
 
     pub(crate) parte_hardware_titulo: String,
     pub(crate) parte_hardware_titulo2: String,
@@ -323,6 +330,17 @@ pub(crate) struct SobreLabel {
     pub(crate) parte_sobre_data_versao: String,
     pub(crate) parte_sobre_dev: String,
     pub(crate) parte_sobre_licenca: String,
+    pub(crate) parte_sobre_doacao_titulo: String,
+    pub(crate) parte_sobre_doacao_texto: String,
+    pub(crate) parte_sobre_doacao_popup_descricao: String,
+    pub(crate) parte_sobre_doacao_popup_descricao_qr_pix: String,
+    pub(crate) parte_sobre_doacao_popup_botao_confirmar: String,
+    pub(crate) parte_sobre_doacao_popup_botao_cancelar: String,
+    pub(crate) parte_sobre_doacao_popup_botao_voltar: String,
+    pub(crate) parte_sobre_doacao_popup_botao_fechar: String,
+
+
+
 }
 
 #[derive(Clone, Serialize, Deserialize)]

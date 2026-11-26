@@ -14,7 +14,7 @@ return (
         </div>
 
         <div className={"sobre-grade-"+display}>
-          {display === 1 && dados.map(({ rotulo, valor, link, icone: Icone }) => (
+          {display === 1 && dados.map(({ rotulo, valor, link, acao, icone: Icone }) => (
 
              <article className="dados-display-1" key={rotulo}>
               <span className="icone-dados-display-1" aria-hidden="true">
@@ -22,8 +22,9 @@ return (
               </span>
               <div className="texto-dados-display-1">
                 <span>{rotulo}</span>
-                {valor && link == null && <strong>{valor}</strong>}
-                {link && <strong><a style={{ color: "white" }} href={link} target="_blank" rel="noopener noreferrer">{valor}</a></strong>}
+                {valor && link == null && acao == null && <strong>{valor}</strong>}
+                {link && acao == null && <strong><a style={{ color: "white" }} href={link} target="_blank" rel="noopener noreferrer">{valor}</a></strong>}
+                {acao && link == null && <strong onClick={acao} style={{cursor:"pointer"}}>{valor}</strong>}
               </div>
             </article>
 

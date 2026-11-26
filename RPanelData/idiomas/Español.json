@@ -1,4 +1,3 @@
-
 {
   "infoIdioma": {
     "idioma": "Español",
@@ -47,7 +46,7 @@
     "discoLabelLivre": "Libre",
     "redeTitulo": "RED",
     "redeDetalhes": "Detalles:",
-    "redeDetalhes2": "Interfaz",
+    "redeDetalhes2": "Interfaz de red",
     "redeDownload": "Descarga",
     "redeLabelDownload": "Recibiendo datos",
     "redeUpload": "Subida",
@@ -90,6 +89,7 @@
     "parteSistemaNomeHost": "Nombre del equipo",
     "parteSistemaKernel": "Kernel",
     "parteSistemaSistemaJanelas": "Sistema de ventanas",
+    "parteSistemaAmbienteGrafico": "Entorno de escritorio",
     "parteSistemaIdioma": "Idioma",
     "parteSistemaTempoSistema": "Tiempo de actividad del sistema",
     "parteSistemaTempoSistemaLabel": "{dias} días, {horas} horas",
@@ -98,10 +98,12 @@
     "parteSistemaDataHora": "Fecha y hora",
     "parteSistemaDataHoraFormato": "%d/%m/%Y - %H:%M",
     "parteSistemaEnderecoMac": "Dirección MAC",
+    "parteSistemaEnderecoGateway": "Dirección de la puerta de enlace",
     "parteSistemaEnderecoIp": "Dirección IP",
     "parteSistemaInterfaceRede": "Interfaz de red actual",
     "parteSistemaPlacaMae": "Placa base",
     "parteSistemaVersaoFirmware": "Versión del firmware",
+    "parteSistemaMonitor": "Monitor",
     "parteHardwareTitulo": "HARDWARE",
     "parteHardwareTitulo2": "Recursos",
     "parteHardwareDescricao": "Componentes instalados en este sistema.",
@@ -130,7 +132,15 @@
     "parteSobreVersao": "Versión",
     "parteSobreDataVersao": "Fecha de lanzamiento",
     "parteSobreDev": "Desarrollador",
-    "parteSobreLicenca": "Licencia"
+    "parteSobreLicenca": "Licencia",
+    "parteSobreDoacaoTitulo": "Apoya a RPanel con una contribución",
+    "parteSobreDoacaoTexto": "Haz clic aquí para contribuir",
+    "parteSobreDoacaoPopupDescricao": "Selecciona el método de contribución",
+    "parteSobreDoacaoPopupDescricaoQrPix": "Escanea el código QR para contribuir mediante Pix",
+    "parteSobreDoacaoPopupBotaoConfirmar": "Confirmar",
+    "parteSobreDoacaoPopupBotaoCancelar": "Cancelar",
+    "parteSobreDoacaoPopupBotaoVoltar": "Volver",
+    "parteSobreDoacaoPopupBotaoFechar": "Cerrar"
   },
   "avisoValores": {
     "semGpu": "¡GPU no disponible!",

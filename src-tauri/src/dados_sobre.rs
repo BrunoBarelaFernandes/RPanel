@@ -1,5 +1,5 @@
 
-use crate::rede::{interface_rede_atual, rede_mac, rede_ip};
+use crate::rede::{interface_rede_atual, rede_mac, rede_ip, rede_gateway};
 use crate::disco::{disco_lista};
 use crate::MONITOR;
 use crate::INFO_RPANEL;
@@ -8,6 +8,7 @@ use std::env;
 use crate::{
     modelos::{DadosSobre, ListaDisco},
 };
+use crate::{monitor_tv::monitor_atual};
 
 use sysinfo::System;
 
@@ -56,6 +57,13 @@ fn sistema_janelas() -> String {
     }
 }
 
+pub(crate) fn ambiente_grafico() -> String {
+    std::env::var("XDG_CURRENT_DESKTOP")
+        .map(|ambiente| ambiente.split(':').last().unwrap_or(&ambiente).to_string())
+        .or_else(|_| std::env::var("DESKTOP_SESSION"))
+        .unwrap_or_else(|_| "Indisponível".to_string())
+}
+
 
 
 #[tauri::command]
@@ -65,14 +73,17 @@ pub(crate) fn info() -> DadosSobre{
         versao_os: "".to_string(),
         kernel: "".to_string(),
         sistema_janelas: "".to_string(),
+        ambiente_grafico: "".to_string(),
         nome_host: "".to_string(),
         idioma: "".to_string(),
         interface_rede: "".to_string(),
+        gateway: "".to_string(),
         mac: "".to_string(),
         ip: "".to_string(),
         fabricante_placa_mae: "".to_string(),
         modelo_placa_mae: "".to_string(),
         versao_firmware: "".to_string(),
+        monitor: "".to_string(),
         discos: ListaDisco {lista: Vec::new(),},
         sobre_rpanel: INFO_RPANEL.clone(),
     };
@@ -82,11 +93,15 @@ pub(crate) fn info() -> DadosSobre{
     dados.versao_os = System::os_version().unwrap_or_else(|| "".to_string());
     dados.kernel = System::kernel_version().unwrap_or_else(|| "".to_string());
     dados.sistema_janelas=sistema_janelas();
+    dados.ambiente_grafico=ambiente_grafico();
     dados.nome_host = System::host_name().unwrap_or_else(|| "".to_string());
     dados.idioma = idioma_sistema();
 
 
     let interface = interface_rede_atual();
+
+    dados.gateway = rede_gateway();
+
 
 
     dados.interface_rede = interface.clone().unwrap_or_else(|| "".to_string());
@@ -101,6 +116,7 @@ pub(crate) fn info() -> DadosSobre{
     dados.fabricante_placa_mae=ler_dmi("board_vendor");
     dados.modelo_placa_mae=ler_dmi("board_name");
     dados.versao_firmware=ler_dmi("bios_version");
+    dados.monitor=monitor_atual();
     
     let monitor = MONITOR.get().unwrap().lock().unwrap();
     dados.discos.lista = disco_lista(&monitor.discos);

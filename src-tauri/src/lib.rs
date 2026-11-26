@@ -15,6 +15,7 @@ pub mod ModulosProcessos;
 mod processos;
 use crate::modelos::{DadosSysInfo, InfoRPanel};
 mod idioma;
+mod monitor_tv;
 
 pub static MONITOR: OnceLock<Mutex<DadosSysInfo>> = OnceLock::new();
 
@@ -23,7 +24,7 @@ pub static INFO_RPANEL: LazyLock<InfoRPanel> = LazyLock::new(|| InfoRPanel {
     data_versao: "00/00/0000".to_string(),
     dev: "Bruno Barela Fernandes".to_string(),
     nome_link_git_hub: "GitHub RPanel".to_string(),
-    endereco_link_git_hub: "https://github.com/BrunoBarelaFernades/RPanel".to_string(),
+    endereco_link_git_hub: "https://github.com/BrunoBarelaFernandes/RPanel".to_string(),
     licenca: "GPL-3.0".to_string(),
 });
 

@@ -77,6 +77,31 @@ pub(crate) fn rede_ip( redes: &Networks, interface_atual: Option<String>) -> Str
         .unwrap_or_else(|| "Indisponível".to_string())
 }
 
+// Pega gateway atual
+pub(crate) fn rede_gateway() -> String {
+    let Ok(saida) = Command::new("ip")
+        .args(["route", "get", "1.1.1.1"])
+        .output()
+    else {return String::new();};
+
+    if !saida.status.success() {
+        return String::new();
+    }
+
+    let texto = String::from_utf8_lossy(&saida.stdout);
+    let partes: Vec<&str> = texto.split_whitespace().collect();
+
+    if let Some(indice_via) = partes.iter().position(|parte| *parte == "via"){
+
+           if let Some(ip) = partes.get(indice_via + 1).map(|gateway| gateway.to_string()){ip}
+
+           else{"".to_string()}
+    }
+
+    else{"".to_string()}
+
+}
+
 // Pega tráfego de rede
 pub(crate) fn rede_rx_tx( redes: &mut Networks, interface_atual: Option<String>) -> DadosRede {
     redes.refresh(true);

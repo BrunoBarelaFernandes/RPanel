@@ -35,9 +35,9 @@ function App() {
     memoriaTotal: 0, memoriaUsada: 0, memoriaRestante: 0
   });
   const [dadosSobre, setDadosSobre] = useState({
-    nomeOs: "Desconhecido", versaoOs: "Desconhecido", kernel: "Desconhecido", sistemaJanelas: "Desconhecido", nomeHost: "Desconhecido",
-    idioma: "Desconhecido", interfaceRede: "Desconhecido", mac: "Desconhecido", ip: "Desconhecido", fabricantePlacaMae: "Desconhecido",
-    modeloPlacaMae: "Desconhecido", versaoFirmware: "Desconhecido", discos: { lista: [] }, sobreRpanel: {
+    nomeOs: "Desconhecido", versaoOs: "Desconhecido", kernel: "Desconhecido", sistemaJanelas: "Desconhecido", ambienteGrafico: "Desconhecido", nomeHost: "Desconhecido",
+    idioma: "Desconhecido", interfaceRede: "Desconhecido", mac: "Desconhecido", gateway: "Desconhecido", ip: "Desconhecido", fabricantePlacaMae: "Desconhecido",
+    modeloPlacaMae: "Desconhecido", versaoFirmware: "Desconhecido", monitor: "Desconhecido", discos: { lista: [] }, sobreRpanel: {
       versao: "Desconhecido",
       dataVersao: "Desconhecido", dev: "Desconhecido", nomeLinkGitHub: "Desconhecido", enderecoLinkGitHub: "Desconhecido", licenca: "Desconhecido"
     }
