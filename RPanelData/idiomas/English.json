@@ -140,7 +140,17 @@
     "parteSobreDoacaoPopupBotaoConfirmar": "Confirm",
     "parteSobreDoacaoPopupBotaoCancelar": "Cancel",
     "parteSobreDoacaoPopupBotaoVoltar": "Back",
-    "parteSobreDoacaoPopupBotaoFechar": "Close"
+    "parteSobreDoacaoPopupBotaoFechar": "Close",
+
+
+    "parteSobreRelatorioBotaoTitulo": "Generate report",
+    "parteSobreRelatorioBotaoDescricao": "Export the system information as a PDF",
+    "parteSobreRelatorioBotaoGerar": "Generating report...",
+    "parteSobreRelatorioPropriedade": "Property",
+    "parteSobreRelatorioValor": "Value",
+    "parteSobreRelatorioComponente": "Component",
+    "parteSobreRelatorioEspecificacao": "Especifications",
+    "parteSobreRelatorioNome": "Report"
   },
   "avisoValores": {
     "semGpu": "GPU Unavailable!",

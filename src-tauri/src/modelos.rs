@@ -339,6 +339,16 @@ pub(crate) struct SobreLabel {
     pub(crate) parte_sobre_doacao_popup_botao_voltar: String,
     pub(crate) parte_sobre_doacao_popup_botao_fechar: String,
 
+    pub(crate) parte_sobre_relatorio_botao_titulo: String,
+    pub(crate) parte_sobre_relatorio_botao_descricao: String,
+    pub(crate) parte_sobre_relatorio_botao_gerar: String,
+    pub(crate) parte_sobre_relatorio_propriedade: String,
+    pub(crate) parte_sobre_relatorio_valor: String,
+    pub(crate) parte_sobre_relatorio_componente: String,
+    pub(crate) parte_sobre_relatorio_especificacao: String,
+    pub(crate) parte_sobre_relatorio_nome: String,
+
+
 
 
 }
@@ -354,4 +364,16 @@ pub(crate) struct AvisoValoresLabel {
     pub(crate) desconhecido: String,
     pub(crate) indefinido: String,
     pub(crate) indisponivel: String,
+}
+
+
+pub(crate) struct Relatorio{
+    pub(crate) dados_sobre: DadosSobre,
+    pub(crate) dados_tempo_os: String,
+    pub(crate) dados_data_hora: String,
+    pub(crate) dados_ram_total: String,
+    pub(crate) dados_info_ram: DadosSistemaRAM,
+    pub(crate) dados_gpu: DadosGPU,
+    pub(crate) dados_disco: DadosDisco,
+    pub(crate) labels: Labels,
 }

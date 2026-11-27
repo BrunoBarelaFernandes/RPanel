@@ -17,7 +17,7 @@ use crate::MONITOR;
 
 
 //Verifica tempo do sistema:
-fn tempo_sistema(labels: Labels) -> String {
+pub(crate) fn tempo_sistema(labels: Labels) -> String {
     let segundos = System::uptime();
     let dias = segundos / 86_400;
     let horas = (segundos % 86_400) / 3_600;

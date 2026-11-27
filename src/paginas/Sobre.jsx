@@ -22,11 +22,16 @@ import {
   TvMinimal,
   HandCoins,
   Info,
+  FileDown,
+  LoaderCircle,
+  Save,
 
 } from 'lucide-react';
+import { invoke } from '@tauri-apps/api/core';
 import './Sobre.css';
 import CardSecao from '../components/CardSecao';
 import PopUpDoacao from '../components/PopUpDoacao';
+
 
 
 
@@ -98,6 +103,18 @@ function confirmarPagamento(forma) { }
 function Sobre({ labels, labelsAvisos, monitor, monitorGPU, dadosSistemaRAM, dadosSobre }) {
 
   const [popupAberto, setPopupAberto] = useState(false);
+  const [gerandoRelatorio, setGerandoRelatorio] = useState(false);
+
+  async function gerarRelatorio() {
+    try {
+      setGerandoRelatorio(true);
+      await invoke('criar_relatorio');
+    } catch (erro) {
+      console.error('Erro ao gerar relatório:', erro);
+    } finally {
+      setGerandoRelatorio(false);
+    }
+  }
 
   let dadosRAM = monitor.ram.usoPercentual
     ? `${dadosSistemaRAM.ddr} · ${dadosSistemaRAM.instalados}/${dadosSistemaRAM.soquetes} ${labels?.parteHardwareRamPentes} · ${dadosSistemaRAM.velocidade} · ${formatarMemoria2(monitor.ram.total)}`
@@ -154,7 +171,29 @@ function Sobre({ labels, labelsAvisos, monitor, monitorGPU, dadosSistemaRAM, dad
   return (
     <main className="pagina-sobre">
 
+      <section className="relatorio-container">
+        <button
+          className="botao-relatorio"
+          onClick={gerarRelatorio}
+          disabled={gerandoRelatorio}
+        >
+          <span className="relatorio-icone">
+            {gerandoRelatorio
+              ? <LoaderCircle size={22} className="relatorio-carregando" />
+              : <FileDown size={22} />
+            }
+          </span>
 
+          <span className="relatorio-texto">
+            <strong>
+              {gerandoRelatorio ? labels?.parteSobreRelatorioBotaoGerar : labels?.parteSobreRelatorioBotaoTitulo}
+            </strong>
+            <small>{labels?.parteSobreRelatorioBotaoDescricao}</small>
+          </span>
+
+          <Save className="relatorio-seta" size={19} />
+        </button>
+      </section>
       <CardSecao
         rotulo={labels?.parteSistemaTitulo}
         titulo={labels?.parteSistemaTitulo2}

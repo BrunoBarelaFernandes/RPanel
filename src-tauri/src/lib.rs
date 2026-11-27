@@ -16,17 +16,12 @@ mod processos;
 use crate::modelos::{DadosSysInfo, InfoRPanel};
 mod idioma;
 mod monitor_tv;
-
+mod relatorio;
+mod info_rpanel;
+use crate::info_rpanel::INFO_RPANEL;
 pub static MONITOR: OnceLock<Mutex<DadosSysInfo>> = OnceLock::new();
 
-pub static INFO_RPANEL: LazyLock<InfoRPanel> = LazyLock::new(|| InfoRPanel {
-    versao: "2.0.0".to_string(),
-    data_versao: "00/00/0000".to_string(),
-    dev: "Bruno Barela Fernandes".to_string(),
-    nome_link_git_hub: "GitHub RPanel".to_string(),
-    endereco_link_git_hub: "https://github.com/BrunoBarelaFernandes/RPanel".to_string(),
-    licenca: "GPL-3.0".to_string(),
-});
+
 
 pub(crate) static MONITOR_SISTEMA: Mutex<bool> = Mutex::new(false);
 pub(crate) static MONITOR_GPU: Mutex<bool> = Mutex::new(false);
@@ -81,7 +76,8 @@ pub fn run() {
             idioma::idioma,
             idioma::mudar_idioma,
             idioma::lista_idiomas,
+            relatorio::criar_relatorio,
             ])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("Erro aplicação RPanel");
 }

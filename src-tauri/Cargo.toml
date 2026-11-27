@@ -28,6 +28,8 @@ gfxinfo = "0.1.2"
 chrono = "0.4.45"
 icon_finder = "1.0.2"
 drm = "0.15.0"
+genpdfi = "0.2.7"
+rfd = "0.18.0"
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
 [profile.release]

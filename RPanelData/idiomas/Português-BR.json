@@ -144,7 +144,19 @@
     "parteSobreDoacaoPopupBotaoConfirmar": "Confirmar",
     "parteSobreDoacaoPopupBotaoCancelar": "Cancelar",
     "parteSobreDoacaoPopupBotaoVoltar": "Voltar",
-    "parteSobreDoacaoPopupBotaoFechar": "Fechar"
+    "parteSobreDoacaoPopupBotaoFechar": "Fechar",
+
+    "parteSobreRelatorioBotaoTitulo": "Gerar relatório",
+    "parteSobreRelatorioBotaoDescricao": "Exporte as informações do sistema em PDF",
+    "parteSobreRelatorioBotaoGerar": "Gerando relatório...",
+    "parteSobreRelatorioPropriedade": "Propriedade",
+    "parteSobreRelatorioValor": "Valor",
+    "parteSobreRelatorioComponente": "Componente",
+    "parteSobreRelatorioEspecificacao": "Especificação",
+    "parteSobreRelatorioNome": "Relatório"
+    
+    
+
   },
   "avisoValores": {
     "semGpu": "GPU indisponível!",
